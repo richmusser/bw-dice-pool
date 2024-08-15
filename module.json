@@ -1,0 +1,17 @@
+{
+    "name": "bw-dice-pool",
+    "title": "BW Dice Pool",
+    "description": "A module that adds a dice-pool rolling button to the HUD, with success counting.",
+    "version": "1.0.0",
+    "author": "Your Name",
+    "minimumCoreVersion": "0.7.9",
+    "compatibleCoreVersion": "11",
+    "esmodules": [
+      "scripts/dice-button.js"
+    ],
+    "styles": [
+      "styles/dice-button.css"
+    ],
+    "manifest": "https://yourwebsite.com/path/to/module.json",
+    "download": "https://yourwebsite.com/path/to/your-module.zip"
+  }

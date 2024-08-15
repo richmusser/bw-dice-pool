@@ -1,0 +1,52 @@
+#dice-roller-container {
+    position: fixed;
+    bottom: 10%;
+    left: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 10000;
+  }
+  
+  #dice-roller-button, #dice-increase-button {
+    width: 50px;
+    height: 50px;
+    background-color: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+  }
+  
+  #dice-roller-button:hover, #dice-increase-button:hover {
+    background-color: #333333;
+  }
+  
+  #dice-roller-button i, #dice-increase-button i {
+    font-size: 24px;
+  }
+  
+  #dice-count-display {
+    color: white;
+    font-size: 20px;
+  }
+
+
+  #pool-panel {
+    color: white;
+    position: fixed;
+    bottom: 100px;
+    left: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,0,0,0.5);
+    width: 400px;
+    height: 150px;
+
+  }
+  
