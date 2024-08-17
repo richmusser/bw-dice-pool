@@ -1,11 +1,31 @@
 <div id="pool-panel">
-    <div> OK!</div>
+   <div class="dice-area">
+   <div>{{numDice}}</div>
+
+    {{#times numDice}}
+       <i class="fas fa-dice-d6"></i>
+    {{/times}}
+
+    </div>
 
 
-      <div class="dice-increase-button" title="Increase Dice Count">
+      <div class="dice-increase-button" title="Increase Dice Pool">
         <i class="fas fa-plus"></i>
-        <div>{{numDice}}</div>
+     
       </div>
+
+      <div class="dice-decrease-button" title="Decrase Dice Pool">
+        <i class="fas fa-minus"></i>
+      </div>
+
+      <div class="roll">
+        Roll
+      </div>
+
+     <div class="roll-open">
+        Roll Open Ended
+      </div>
+
 
 
 </div>

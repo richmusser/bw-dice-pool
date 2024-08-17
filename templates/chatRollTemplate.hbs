@@ -1,0 +1,24 @@
+<div>
+    {{#if passedTest}}
+        <div>Success!</div>
+    {{/if}}
+    {{#unless passedTest}}
+        <div>Failed!</div>
+    {{/unless}}
+    <div></div>
+    <span>Ob: {{ob}}</span>
+
+    <div>
+        {{#each rollResults}}
+            <div>
+                <div>{{this.result}}</div>
+                <div>{{this.success}}</div>
+
+            </div>
+        {{/each}}
+
+
+
+    </div>
+
+</div>
