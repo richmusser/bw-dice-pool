@@ -1,0 +1,52 @@
+<div class="spell-section-item flex-row" {{#if isOwner}}draggable="true"{{/if}} data-id="{{spell._id}}">
+    {{#if isOwner}}
+    <input id="{{spell._id}}-collapse" type="checkbox" class="hidden" data-item-id="{{spell._id}}" data-binding="system.collapsed" {{ checked system.collapsed }}>
+    {{/if}}
+    <label for="{{spell._id}}-collapse" class="spell-item-title">
+        {{#if isOwner}}{{#if system.collapsed}}<i class="fas fa-chevron-circle-right"></i>{{else}}<i class="fas fa-chevron-circle-down"></i>{{/if}}{{/if}}
+        {{spell.name}}
+    </label>
+    {{#if isOwner}}
+        <button type="button" class="rollable modifiable" data-skill-id="{{spell.system.skillId}}" data-spell-id="{{spell._id}}" data-roll-type="spell"><i class="fas fa-dice"></i></button>
+    {{/if}}
+    {{#if system.collapsed}}{{else}}
+    <div class="spell-details flex-row">
+        <label class="spell-details-label">{{localize "BW.skill.skill"}}</label>
+        <select class="spell-details-data" data-item-id="{{spell._id}}" data-binding="system.skillId" value="{{spell.system.skillId}}">
+            {{#select spell.system.skillId}}
+            <option value="">{{localize "BW.none"}}</option>
+            {{#each skills as |s|}}
+            <option value="{{s._id}}">{{s.name}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+        {{#if spell.system.inPracticals}}
+        <div class="practicals-label">
+            {{localize "BW.character.practicals"}}
+        </div>
+        {{{itemProgressTicks spell._id spell.system.learningProgress "system.learningProgress" "spell-practicals" spell.system.aptitude 0}}}
+        {{/if}}
+        <label class="spell-details-label">{{localize "BW.obstacle"}}</label><div class="spell-details-data">{{spell.obstacleLabel}}</div>
+        <label class="spell-details-label">{{localize "BW.character.actions"}}</label><div class="spell-details-data">{{spell.system.actions}}</div>
+        {{#if spell.system.isWeapon}}
+        <label class="spell-details-label">{{localize "BW.weapon.asWeapon"}}</label>
+        <div class="spell-weapon">
+            <div class="table-header">{{localize "BW.weapon.incidentalAcronym"}}</div>
+            <div class="table-header">{{localize "BW.weapon.markAcronym"}}</div>
+            <div class="table-header">{{localize "BW.weapon.superbAcronym"}}</div>
+            <div class="table-header">{{localize "BW.weapon.vsArmorAcronym"}}</div>
+            <div>{{spell.system.incidental}}</div>
+            <div>{{spell.system.mark}}</div>
+            <div>{{spell.system.superb}}</div>
+            <div>{{spell.system.va}}</div>
+        </div>
+        {{/if}}
+        {{#if isOwner}}
+        <div class="edit-icons">
+            <i class="fas fa-edit" data-action="editItem" data-id="{{spell._id}}"></i>
+            <i class="fas fa-trash" data-action="delItem" data-id="{{spell._id}}"></i>
+        </div>
+        {{/if}}
+    </div>
+    {{/if}}
+</div>

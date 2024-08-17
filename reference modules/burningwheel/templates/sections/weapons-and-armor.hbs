@@ -1,0 +1,109 @@
+<h2 class="section-header">
+    {{#if isOwner}}
+    <input type="checkbox" id="{{actor.id}}-collapseCombat" name="system.collapseCombat" class="section-collapse" {{ checked system.collapseCombat }}>
+    <i class="fas fa-chevron-down"></i>
+    {{/if}}
+    <label for="{{actor.id}}-collapseCombat" class="section-collapse-label clickable">{{localize "BW.character.weaponsAndArmor"}}</label>
+</h2>
+{{#if system.collapseCombat}}{{else}}
+<div class="combat-section flex-row">
+    <div class="weapons">
+        {{> "systems/burningwheel/templates/parts/weapons.hbs" melee=melee ranged=ranged skills=actor.martialSkills}}
+    </div>
+    <div class="armor-misc flex-column">
+        <div class="training-skills">
+            <hr>
+            <h3>{{localize "BW.character.trainingSkills"}}</h3>
+            {{#each training as |t|}}
+            <div class="training-skill" data-item-id="{{t.id}}">
+                <div class="flex-row">
+                    <div class="training-skill-name">{{ t.name }}</div>
+                    {{#if ../isOwner}}
+                    <i class="fas fa-edit" data-action="editItem" data-id="{{t._id}}"></i>
+                    <i class="fas fa-trash" data-action="delItem" data-id="{{t._id}}"></i>
+                    {{/if}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        <div class="clumsy-stats">
+            <hr>
+            <h3>{{localize "BW.character.clumsyWeight"}}</h3>
+            <div class="flex-row">
+                {{#if system.clumsyWeight.agilityPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.agility"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.agilityPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.speedObPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.speed"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.speedObPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.speedDiePenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.speed"}}</label>
+                    <div class="clumsy-value">-{{system.clumsyWeight.speedDiePenalty}} {{localize "BW.die"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.climbingPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.climbing"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.climbingPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.healthFortePenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.health"}} / {{localize "BW.forte"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.healthFortePenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.throwingShootingPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.throwingShooting"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.throwingShootingPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.stealthyPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.stealthy"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.stealthyPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.swimmingPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.swimming"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.swimmingPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.helmetObPenalty}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.perceptionObs"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.helmetObPenalty}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#unless system.armorTrained}}
+                {{#if system.clumsyWeight.untrainedHealth}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.untrainedHealthForte"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.untrainedHealth}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{#if system.clumsyWeight.untrainedAll}}
+                <div class="clumsy-item flex-row">
+                    <label class="clumsy-label">{{localize "BW.armor.untrainedGlobal"}}</label>
+                    <div class="clumsy-value">+{{system.clumsyWeight.untrainedAll}} {{localize "BW.obstacleAcronym"}}</div>
+                </div>
+                {{/if}}
+                {{/unless}}
+            </div>
+        </div>
+    </div>
+    <div class="armor">
+        <hr>
+        {{> "systems/burningwheel/templates/parts/armor.hbs" armor=armor }}
+    </div>
+</div>
+{{/if}}
