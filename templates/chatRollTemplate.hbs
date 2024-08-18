@@ -1,24 +1,83 @@
-<div>
-    {{#if passedTest}}
-        <div>Success!</div>
-    {{/if}}
-    {{#unless passedTest}}
-        <div>Failed!</div>
-    {{/unless}}
-    <div></div>
-    <span>Ob: {{ob}}</span>
+<div class="bw-chat-message flexcol">
 
+  <div class="chat-separator chat-message-med difficulty">
+    {{difficulty}} Test
+  </div>
+
+  <div class="flexrow chat-separator">
+
+    <div class="">
+      <div>
+        Roll
+      </div>
+      <div class="chat-message-big">
+        {{totalDice}}
+      </div>
+      <div>
+        {{shade}}
+      </div>
+    </div>
+
+    <div class="vs-divider">
+        vs
+    </div>
+
+    <div class="">
+      <div>
+        Ob
+      </div>
+      <div class="chat-message-big">
+        {{ob}}
+      </div>
+    </div>
+
+  </div>
+
+  {{!-- individual dice --}}
+  <div class="flexrow chat-flex-center chat-separator">
+    {{#each rollResults}}
+    <div class="chat-die {{#if this.success}}success{{/if}}  {{#unless this.success}}failed{{/unless}}">
+      {{this.result}}
+    </div>
+    {{/each}}
+  </div>
+  <div>
+    {{successCount}} successes
+  </div>
+
+
+
+
+
+  {{#if passedTest}}
+    <div class="chat-roll-result success">Success!</div>
+  {{/if}}
+  {{#unless passedTest}}
+    <div class="chat-roll-result failed">Failed!</div>
+  {{/unless}}
+
+  {{!--
+
+  {{#if passedTest}}
+  <div>Success!</div>
+  {{/if}}
+  {{#unless passedTest}}
+  <div>Failed!</div>
+  {{/unless}}
+  <div></div>
+  <span>Ob: {{ob}}</span>
+
+  <div>
+    {{#each rollResults}}
     <div>
-        {{#each rollResults}}
-            <div>
-                <div>{{this.result}}</div>
-                <div>{{this.success}}</div>
-
-            </div>
-        {{/each}}
-
-
+      <div>{{this.result}}</div>
+      <div>{{this.success}}</div>
 
     </div>
+    {{/each}}
+
+
+
+  </div> --}}
 
 </div>

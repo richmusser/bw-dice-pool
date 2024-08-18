@@ -1,31 +1,95 @@
-<div id="pool-panel">
-   <div class="dice-area">
-   <div>{{numDice}}</div>
+<div id="bw-dice-pool" class="flexcol">
 
-    {{#times numDice}}
-       <i class="fas fa-dice-d6"></i>
-    {{/times}}
+  <div class="flexrow">
+
+    <div class="pool flexrow">
+      <div class="flexrow">
+        {{!-- Dice control buttons --}}
+        <div class="pool-controls flexcol">
+          <div class="btn btn-dice dice-increase-button" title="Increase Dice Pool">
+            <i class="fas fa-plus"></i>
+
+          </div>
+
+          <div class="btn btn-dice dice-decrease-button" title="Decrase Dice Pool">
+            <i class="fas fa-minus"></i>
+          </div>
+
+          <div class="btn btn-shade">
+            <span>{{shade}}</span>
+          </div>
+
+        </div>
+
+        {{!-- Dice --}}
+        <div class="dice-area">
+          {{#if renderDice}}
+          <div class="dice-display">
+            {{#times numDice}}
+            <i class="die fas fa-dice-d6"></i>
+            {{/times}}
+          </div>
+          {{/if}}
+          {{#unless renderDice}}
+          <div class="dice-numeric">
+            <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
+          </div>
+          {{/unless}}
+
+        </div>
+
+      </div>
+    </div>
+
+    {{!-- vs divider --}}
+    <div class="vs-divider">
+      vs
+    </div>
+
+    {{!-- ob area--}}
+    <div class="ob-area">
+
+      <div class="flexrow">
+        <div>
+          <div class="ob-label">Ob</div>
+          <div class="ob-value">{{ob}}</div>
+        </div>
+
+        {{#if isGm}}
+          <div class="ob-controls flexcol">
+            <div class="btn btn-ob btn-ob-increase" title="Increase Obstacle">
+              <i class="fas fa-plus"></i>
+            </div>
+
+            <div class="btn btn-ob btn-ob-decrease" title="Decrase Obstacle">
+              <i class="fas fa-minus"></i>
+            </div>
+          </div>
+        {{/if}}
+
+      </div>
+   
+
+  
 
     </div>
 
+  </div>
 
-      <div class="dice-increase-button" title="Increase Dice Pool">
-        <i class="fas fa-plus"></i>
-     
-      </div>
+  {{!-- roll controls --}}
+  <div class="roll-controls flexrow gap ">
 
-      <div class="dice-decrease-button" title="Decrase Dice Pool">
-        <i class="fas fa-minus"></i>
-      </div>
-
-      <div class="roll">
+  
+      <div class="btn btn-roll roll">
         Roll
       </div>
 
-     <div class="roll-open">
+      <div class="btn btn-roll roll-open">
         Roll Open Ended
       </div>
 
+ 
+  </div>
 
 
 </div>

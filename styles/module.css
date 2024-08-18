@@ -1,52 +1,214 @@
-#dice-roller-container {
-    position: fixed;
-    bottom: 10%;
-    left: 2%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    z-index: 10000;
-  }
-  
-  #dice-roller-button, #dice-increase-button {
-    width: 50px;
-    height: 50px;
-    background-color: #1a1a1a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: white;
-  }
-  
-  #dice-roller-button:hover, #dice-increase-button:hover {
-    background-color: #333333;
-  }
-  
-  #dice-roller-button i, #dice-increase-button i {
-    font-size: 24px;
-  }
-  
-  #dice-count-display {
-    color: white;
-    font-size: 20px;
-  }
+
+#bw-dice-pool {
+   color: white;
+  position: fixed;
+  bottom: 90px;
+  margin-left: 50%;
+  left: -320px;
+  display: flex;
 
 
-  #pool-panel {
-    color: white;
-    position: fixed;
-    bottom: 100px;
-    left: 20%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    background: rgba(0,0,0,0.5);
-    width: 400px;
-    height: 150px;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  width: 400px;
+  height: 150px;
+  border-radius: 4px; 
+  padding: 8px;
+}
 
-  }
+.pool {
+  padding: 5px;
+}
+
+.pool .pool-controls {
+  flex: 3;
+}
+
+.pool .dice-area {
+  flex: 1;
+  width: 80px;
+  text-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.pool .dice-display {
+  width: 80px;
+}
+
+.pool .die {
+  font-size: 18px;
+  margin: 4px;
+}
+
+.pool .dice-numeric {
+  font-size: 48px;
+  display: flex;
+}
+.pool .dice-numeric .die {
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.pool .roll-controls {
+  color: white;
+}
+
+.vs-divider {
+
+  flex-direction: column;
+  padding: 5px;
+  display: flex;
+  font-size: 24px;
+  text-align: center;
+  justify-content: center;
+
+}
+
+.ob-area {
+
+  flex-direction: column;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+
+}
+
+.btn-roll {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+
+}
+
+.btn-dice {
+  font-size: 21px;
+}
+
+.full-width {
+  flex: 1 1 100%;
+} 
+
+.ob-label {
+  font-size: 18px;
+}
+
+.ob-value {
+  font-size: 48px;
+}
+
+.btn-shade {
+  font-size: 18px;
+}
+
+/* .btn-shade {
+  padding: 4px;
+  flex: initial;
+  width: 20px;
+  text-align: center;
+}
+
+.btn-shade.active {
+  border-radius: 20px;
+  border: 1px solid white;
+
+} */
+
+.btn {
+  text-align: center;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, .2);
+}
+
+
+/* .ob-controls {
   
+
+} */
+
+.btn-ob {
+  font-size: 18px;
+}
+
+.bw-chat-messge > div {
+  text-align: center;
+
+}
+
+.gap {
+  gap: 8px;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.chat-message-big {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.chat-message-med {
+  font-size: 1.5em;
+  padding: 4px;
+}
+
+.chat-roll-result {
+  font-size: 1.5em;
+  padding: 4px;
+
+}
+
+.chat-roll-result.success {
+  color: green;
+  background: rgba(0,200,0, 0.3);
+
+}
+
+.chat-roll-result.failed {
+  color:red;
+  background: rgba(200,0, 0, 0.3)
+}
+
+.chat-separator {
+  border-top: 1px solid rgba(0,0,0,.3);
+}
+
+.chat-die {
+  width: fit-content;
+  font-size: 1em;
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 20px;
+  flex-basis: 20px;
+  margin: 4px;
+  flex-grow: unset;
+}
+
+.chat-die.success {
+  color: green;
+  background: rgba(0,200,0, 0.3);
+  border-color: green; 
+
+}
+
+.chat-die.failed {
+  color: red;
+  background: rgba(200,0,0, 0.3);
+  border-color: red; 
+
+}
+
+.chat-flex-center {
+  justify-content: center;
+
+}
+
+.bw-chat-message .vs-divider {
+  font-size: 18px;
+}
