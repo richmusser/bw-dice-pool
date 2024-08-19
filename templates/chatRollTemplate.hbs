@@ -8,14 +8,12 @@
 
     <div class="">
       <div>
-        Roll
+         {{shade}}
       </div>
       <div class="chat-message-big">
         {{totalDice}}
       </div>
-      <div>
-        {{shade}}
-      </div>
+
     </div>
 
     <div class="vs-divider">
@@ -35,7 +33,7 @@
 
   {{!-- individual dice --}}
   <div class="flexrow chat-flex-center chat-separator">
-    {{#each rollResults}}
+    {{#each rollResults }}
     <div class="chat-die {{#if this.success}}success{{/if}}  {{#unless this.success}}failed{{/unless}}">
       {{this.result}}
     </div>
@@ -46,9 +44,6 @@
   </div>
 
 
-
-
-
   {{#if passedTest}}
     <div class="chat-roll-result success">Success!</div>
   {{/if}}
@@ -56,28 +51,13 @@
     <div class="chat-roll-result failed">Failed!</div>
   {{/unless}}
 
-  {{!--
-
-  {{#if passedTest}}
-  <div>Success!</div>
-  {{/if}}
-  {{#unless passedTest}}
-  <div>Failed!</div>
-  {{/unless}}
-  <div></div>
-  <span>Ob: {{ob}}</span>
-
-  <div>
-    {{#each rollResults}}
-    <div>
-      <div>{{this.result}}</div>
-      <div>{{this.success}}</div>
-
+  <div class="flexrow">
+    <div class="btn chat-btn fate-reroll">
+      Reroll with Fate
     </div>
-    {{/each}}
-
-
-
-  </div> --}}
+    <div class="btn chat-btn">
+      Reroll with Deeds
+    </div>
+  </div>
 
 </div>

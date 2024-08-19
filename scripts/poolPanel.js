@@ -1,3 +1,5 @@
+const SOCKET_NAME ='module.bw-dice-pool'
+
 export class PoolPanel extends Application {
 
   numDice = 4
@@ -9,11 +11,13 @@ export class PoolPanel extends Application {
       template: "modules/bw-dice-pool/templates/poolPanel.hbs",
       popOut: false,
     });
-    console.log("PoolPanel ctor")
-    this.mods = mods || [];
-    this.help = help || [];
 
-    console.log("gamelburninghweel", game.burningwheel)
+    try {
+      this.ob = game.settings.get('bw-dice-pool', 'obstacle')
+    }
+    catch(err) {
+      console.error('Error getting obstacle setting: ' + err)
+    }
   }
 
   activateListeners(html) {
@@ -23,7 +27,7 @@ export class PoolPanel extends Application {
     })
 
     html.find('.dice-decrease-button').on('click', () => {
-      if (this.numDice > 0) {
+      if (this.numDice > 1) {
         this.numDice--
       }
       //game.burningwheel.macros.rollSkill(0,0)
@@ -48,14 +52,37 @@ export class PoolPanel extends Application {
     })
 
     html.find('.btn-ob-increase').on('click', () => {
-      this.ob++
-      this.render();
+      this.changeOb(this.ob + 1);
     })
 
     html.find('.btn-ob-decrease').on('click', () => {
-      this.ob--
-      this.render();
-    })
+      this.changeOb(this.ob - 1);
+      })
+  }
+
+  socketListen() {
+    game.socket.on(SOCKET_NAME, ({ type, ob }) => {
+      console.log("ON SOCKET", type, ob)
+        if (type === "obChanged") {
+            this.ob = ob;
+            this.render(true);
+        }
+      });
+  }
+
+  changeOb(ob) {
+    if(ob < 1) {
+      ob = 1;
+    }
+    this.ob = ob
+
+    this.render();
+    this.sendObChangedEvent(this.ob)
+    game.settings.set('bw-dice-pool', 'obstacle', ob)
+  }
+
+  sendObChangedEvent(ob) {
+    game.socket.emit(SOCKET_NAME, {type: "obChanged", ob: ob} )
   }
 
   getData() {
@@ -66,8 +93,6 @@ export class PoolPanel extends Application {
     data.ob = this.ob
     data.shade = this.shade
     data.isGm = game.user.isGM
-    console.log("USER", game.user)
-
 
     console.log("DATA", data)
 
@@ -103,32 +128,9 @@ export class PoolPanel extends Application {
   }
 
   async rollPool({ open }) {
-
-    // const roll = new Roll(`${numDice}d6${open ? 'x6' : ''}cs>${tgt}`).roll({ async: true });
     let roll = await this.rollDice(this.numDice, open, this.shadeToTarget())
-
-
-    let evalData = this.evaluateRoll(roll, this.ob)
+    let evalData = this.evaluateRoll(this.numDice, roll, this.ob)
     await this.sendRollToChat(evalData)
-
-    // //  const roll = new Roll(`${ this.numDice}d6`, {})
-    // const roll = new Roll(`{${ this.numDice}d6x}cs>3`, {})
-
-    //     console.log(roll.terms);
-
-    //     await roll.evaluate({async:true});
-
-    //     const pool = PoolTerm.fromRolls([roll]);
-    //     let rollFromTerms = Roll.fromTerms([pool]);
-    //     rollFromTerms.toMessage();
-
-
-    // const successes = roll.dice[0].results.filter(die => die.result >= 4).length;
-    // const successMessage = `Rolled ${diceCount}d6: ${successes} Success${successes === 1 ? '' : 'es'}`;
-    // ChatMessage.create({
-    //   content: successMessage,
-    //   speaker: ChatMessage.getSpeaker()
-    // });
   }
 
   async rollPoolOpen() {
@@ -146,17 +148,18 @@ export class PoolPanel extends Application {
     return roll
   }
 
-  evaluateRoll(roll, ob) {
+  evaluateRoll(numRolled, roll, ob) {
     console.log("roll terms", roll.terms);
     const successes = roll.terms[0].results.filter((r) => r.success)
     const passedTest = successes.length >= ob
+    const totalDice = numRolled//roll.terms[0].number
     let data = {
       ob,
       passedTest,
+      totalDice,
       successCount: successes.length,
       rollResults: roll.terms[0].results, // success, result
-      totalDice: roll.terms[0].number,
-      difficulty: "Challenging",
+      difficulty: this.findTestDifficulty(totalDice, ob),
       shade: this.shadeLabel(),
     }
 
@@ -165,10 +168,40 @@ export class PoolPanel extends Application {
 
   async sendRollToChat(chatData) {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
-    return ChatMessage.create({
+    let chat =  await ChatMessage.create({
       content: message,
       // speaker: ChatMessage.getSpeaker({ actor })
     });
+
+    return chat
+  }
+
+  findTestDifficulty(dice, ob) {
+
+    if(ob > dice) {
+      return 'Challenging'
+    }
+    else if(dice === 1) {
+      return 'Routine/Difficult'
+    }
+    else if(dice <= 3) {
+      if(ob === dice) 
+        return 'Difficult'
+      else 
+        return  'Routine'
+    }
+    else if(dice <= 7) {
+      if( dice - ob <= 1) 
+        return 'Difficult'
+      else 
+        return 'Routine'
+    }
+    else {
+      if( dice - ob <= 2) 
+        return 'Difficult'
+      else
+      return 'Routine'
+    }
 
   }
 }

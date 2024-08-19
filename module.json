@@ -12,6 +12,7 @@
     "styles": [
       "styles/module.css"
     ],
+    "socket": true,
     "manifest": "https://yourwebsite.com/path/to/module.json",
     "download": "https://yourwebsite.com/path/to/your-module.zip"
   }
