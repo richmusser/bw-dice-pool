@@ -1,4 +1,8 @@
+import {shadeToTarget, shadeLabel} from './shadeUtils.js'
+
 const SOCKET_NAME ='module.bw-dice-pool'
+
+
 
 export class PoolPanel extends Application {
 
@@ -71,6 +75,7 @@ export class PoolPanel extends Application {
   }
 
   changeOb(ob) {
+   
     if(ob < 1) {
       ob = 1;
     }
@@ -108,27 +113,10 @@ export class PoolPanel extends Application {
       this.shade = 'B'
   }
 
-  shadeToTarget() {
-    if (this.shade === 'B')
-      return 3
-    else if (this.shade === 'G')
-      return 2
-    else if (this.shade === 'W')
-      return 1
-  }
 
-  shadeLabel() {
-    if (this.shade === 'B')
-      return "Black"
-    else if (this.shade === 'G')
-      return "Gray"
-    else if (this.shade === 'W')
-      return "White"
-
-  }
 
   async rollPool({ open }) {
-    let roll = await this.rollDice(this.numDice, open, this.shadeToTarget())
+    let roll = await this.rollDice(this.numDice, open, shadeToTarget(this.shade))
     let evalData = this.evaluateRoll(this.numDice, roll, this.ob)
     await this.sendRollToChat(evalData)
   }
@@ -151,16 +139,18 @@ export class PoolPanel extends Application {
   evaluateRoll(numRolled, roll, ob) {
     console.log("roll terms", roll.terms);
     const successes = roll.terms[0].results.filter((r) => r.success)
+    const sixes = roll.terms[0].results.filter((r) => r.result == 6)
     const passedTest = successes.length >= ob
     const totalDice = numRolled//roll.terms[0].number
     let data = {
       ob,
       passedTest,
       totalDice,
+      sixes: sixes.length,
       successCount: successes.length,
       rollResults: roll.terms[0].results, // success, result
       difficulty: this.findTestDifficulty(totalDice, ob),
-      shade: this.shadeLabel(),
+      shade: shadeLabel(this.shade),
     }
 
     return data;
