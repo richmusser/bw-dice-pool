@@ -6,8 +6,6 @@
   margin-left: 50%;
   left: -320px;
   display: flex;
-
-
   gap: 10px;
   background: rgba(0, 0, 0, 0.5);
   width: 400px;
@@ -58,7 +56,6 @@
 }
 
 .vs-divider {
-
   flex-direction: column;
   padding: 5px;
   display: flex;
@@ -66,16 +63,13 @@
   text-align: center;
   justify-content: center;
   flex-grow: 1;
-
 }
 
 .ob-area {
-
   flex-direction: column;
   padding: 5px;
   display: flex;
   align-items: center;
-
 }
 
 .btn-roll {
@@ -83,7 +77,6 @@
   border-radius: 4px;
   padding: 8px;
   text-align: center;
-
 }
 
 .btn-dice {
@@ -114,11 +107,8 @@
   background: rgba(255, 255, 255, .2);
 }
 
-
- .ob-controls {
+.ob-controls {
   margin-left: 20px;
-  
-
 } 
 
 .btn-ob {
@@ -127,7 +117,6 @@
 
 .bw-chat-messge > div {
   text-align: center;
-
 }
 
 .gap {
@@ -213,4 +202,13 @@
   padding: 3px;
   margin: 4px;
   background-color: rgba(255, 255, 255, .5)
+}
+
+.dof-header {
+  font-size: 1.5em;
+}
+
+.dof-value {
+  font-size:  3em;
+  font-weight: bold;
 }

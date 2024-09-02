@@ -42,12 +42,17 @@ export class PoolPanel extends Application {
 
     html.find('.roll').on('click', async () => {
       await this.rollPool({ open: false });
-      this.render();
+    //  this.render();
     })
 
     html.find('.roll-open').on('click', async () => {
       await this.rollPool({ open: true });
-      this.render();
+    //  this.render();
+    })
+
+    html.find('.roll-dof').on('click', async () => {
+      await this.rollDieOfFate();
+    //  this.render();
     })
 
     html.find('.btn-shade').on('click', (elem) => {
@@ -131,18 +136,33 @@ export class PoolPanel extends Application {
 
     chatData.json = JSON.stringify(chatData)
 
-    await this.sendRollToChat(chatData)
+    let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
+    await ChatMessage.create({
+      content: message,
+      // speaker: ChatMessage.getSpeaker({ actor })
+    });
   }
 
-  async sendRollToChat(chatData) {
-    let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
-    let chat = await ChatMessage.create({
+  async rollDieOfFate(){
+    const roll = await new Roll(`1d6`).evaluate({ async: true });
+    if (game.dice3d) {
+      await game.dice3d.showForRoll(roll, game.user, true, null, false)
+        .then(_ => roll);
+    }
+
+    let chatData = {
+      value: roll.terms[0].results[0].result
+    }
+
+    let message = await renderTemplate("modules/bw-dice-pool/templates/chatDieOfFate.hbs", chatData);
+    await ChatMessage.create({
       content: message,
       // speaker: ChatMessage.getSpeaker({ actor })
     });
 
     return chat
   }
+
 
   findTestDifficulty(dice, ob) {
 
