@@ -1,14 +1,14 @@
 <div class="bw-chat-message flexcol">
 
   <div class="chat-separator chat-message-med difficulty">
-    {{difficulty}} Test
+    Fate Reroll: {{difficulty}} Test
   </div>
 
   <div class="flexrow chat-separator">
 
     <div class="">
       <div>
-         {{shadeLabel}}
+         {{shade}}
       </div>
       <div class="chat-message-big">
         {{totalDice}}
@@ -54,18 +54,10 @@
   {{#unless passedTest}}
     <div class="chat-roll-result failed">Failed!</div>
 
-    <div class="flexrow">
-      {{#if sixes}}
-      <div class="btn chat-btn fate-reroll" 
-        data-json="{{json}}"
-      >
-        Reroll with Fate
-      </div>
-      {{/if}}
-    
-      <div class="btn chat-btn">
-        Reroll with Deeds
-      </div>
+    <div class="flexrow">   
+        <div class="btn chat-btn">
+            Reroll with Deeds
+        </div>
     </div>
   {{/unless}}
 

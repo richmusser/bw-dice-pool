@@ -6,5 +6,15 @@ export function registerHelpers() {
             accum += block.fn(i);
         return accum;
     });
+
+
+    Handlebars.registerHelper('equalsOne', function(value, options) {
+        if(value === 1) {
+            return options.fn(this);
+          }
+          return options.inverse(this);
+    });
+
+ 
 }
 

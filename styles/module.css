@@ -28,9 +28,10 @@
   flex: 1;
   width: 80px;
   text-wrap: wrap;
-  justify-content: center;
+  /*justify-content: center; */
   align-items: center;
   display: flex;
+  flex-direction: column;
 }
 
 .pool .dice-display {
@@ -204,4 +205,12 @@
 
 .align-center {
   align-items: center;
+}
+
+.chat-btn {
+  border: 1px solid rgba(0,0,0,.5);
+  border-radius: 2px;
+  padding: 3px;
+  margin: 4px;
+  background-color: rgba(255, 255, 255, .5)
 }

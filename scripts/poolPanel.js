@@ -1,14 +1,16 @@
 import {shadeToTarget, shadeLabel} from './shadeUtils.js'
+import {BwDicePool} from './BwDicePool.js'
 
 const SOCKET_NAME ='module.bw-dice-pool'
-
-
 
 export class PoolPanel extends Application {
 
   numDice = 4
   ob = 3
   shade = 'B'
+
+  shades = ['B', 'G', 'W']
+  shadeIndex = 0;
 
   constructor(mods, help) {
     super({
@@ -90,13 +92,17 @@ export class PoolPanel extends Application {
     game.socket.emit(SOCKET_NAME, {type: "obChanged", ob: ob} )
   }
 
+  getShade() {
+    return this.shades[this.shadeIndex]
+  }
+
   getData() {
     const data = super.getData();
     data.numDice = this.numDice;
 
     data.renderDice = data.numDice < 10
     data.ob = this.ob
-    data.shade = this.shade
+    data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
 
     console.log("DATA", data)
@@ -105,56 +111,61 @@ export class PoolPanel extends Application {
   }
 
   cycleShade() {
-    if (this.shade === 'B')
-      this.shade = 'G'
-    else if (this.shade === 'G')
-      this.shade = 'W'
-    else if (this.shade === 'W')
-      this.shade = 'B'
+    this.shadeIndex++;
+    if(this.shadeIndex >= this.shades.length)
+      this.shadeIndex = 0;
   }
 
 
 
   async rollPool({ open }) {
-    let roll = await this.rollDice(this.numDice, open, shadeToTarget(this.shade))
-    let evalData = this.evaluateRoll(this.numDice, roll, this.ob)
-    await this.sendRollToChat(evalData)
+
+    let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob)
+    await pool.roll()
+
+
+  //  let roll = await this.rollDice(this.numDice, open, shadeToTarget(this.shade))
+   // let evalData = this.evaluateRoll(this.numDice, roll, this.ob)
+    //let evalData = pool.data
+    await this.sendRollToChat(pool.data)
   }
 
-  async rollPoolOpen() {
+  // async rollPoolOpen() {
 
-  }
+  // }
 
-  async rollDice(numDice, isOpen, target) {
-    console.log(`rolling! ${numDice} dice`)
-    const roll = await new Roll(`${numDice}d6${isOpen ? 'x6' : ''}cs>${target}`).evaluate({ async: true });
-    if (game.dice3d) {
-      return game.dice3d.showForRoll(roll, game.user, true, null, false)
-        .then(_ => roll);
-    }
+  // async rollDice(numDice, isOpen, target) {
+  //   console.log(`rolling! ${numDice} dice`)
+  //   const roll = await new Roll(`${numDice}d6${isOpen ? 'x6' : ''}cs>${target}`).evaluate({ async: true });
+  //   if (game.dice3d) {
+  //     return game.dice3d.showForRoll(roll, game.user, true, null, false)
+  //       .then(_ => roll);
+  //   }
 
-    return roll
-  }
+  //   return roll
+  // }
 
-  evaluateRoll(numRolled, roll, ob) {
-    console.log("roll terms", roll.terms);
-    const successes = roll.terms[0].results.filter((r) => r.success)
-    const sixes = roll.terms[0].results.filter((r) => r.result == 6)
-    const passedTest = successes.length >= ob
-    const totalDice = numRolled//roll.terms[0].number
-    let data = {
-      ob,
-      passedTest,
-      totalDice,
-      sixes: sixes.length,
-      successCount: successes.length,
-      rollResults: roll.terms[0].results, // success, result
-      difficulty: this.findTestDifficulty(totalDice, ob),
-      shade: shadeLabel(this.shade),
-    }
+  // evaluateRoll(numRolled, roll, ob) {
+  //   console.log("roll terms", roll.terms);
+  //   const successes = roll.terms[0].results.filter((r) => r.success)
+  //   const sixes = roll.terms[0].results.filter((r) => r.result == 6)
+  //   const passedTest = successes.length >= ob
+  //   const totalDice = numRolled//roll.terms[0].number
+  //   let data = {
+  //     ob,
+  //     passedTest,
+  //     totalDice,
+  //     sixes: sixes.length,
+  //     successCount: successes.length,
+  //     rollResults: roll.terms[0].results, // success, result
+  //     difficulty: this.findTestDifficulty(totalDice, ob),
+  //     shade: shadeLabel(this.shade),      
+  //   }
 
-    return data;
-  }
+  //   data.json = JSON.stringify(data)
+
+  //   return data;
+  // }
 
   async sendRollToChat(chatData) {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
