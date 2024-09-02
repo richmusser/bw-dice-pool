@@ -1,7 +1,7 @@
-import {shadeToTarget, shadeLabel} from './shadeUtils.js'
-import {BwDicePool} from './BwDicePool.js'
+import { shadeToTarget, shadeLabel } from './shadeUtils.js'
+import { BwDicePool } from './BwDicePool.js'
 
-const SOCKET_NAME ='module.bw-dice-pool'
+const SOCKET_NAME = 'module.bw-dice-pool'
 
 export class PoolPanel extends Application {
 
@@ -21,7 +21,7 @@ export class PoolPanel extends Application {
     try {
       this.ob = game.settings.get('bw-dice-pool', 'obstacle')
     }
-    catch(err) {
+    catch (err) {
       console.error('Error getting obstacle setting: ' + err)
     }
   }
@@ -63,22 +63,22 @@ export class PoolPanel extends Application {
 
     html.find('.btn-ob-decrease').on('click', () => {
       this.changeOb(this.ob - 1);
-      })
+    })
   }
 
   socketListen() {
     game.socket.on(SOCKET_NAME, ({ type, ob }) => {
       console.log("ON SOCKET", type, ob)
-        if (type === "obChanged") {
-            this.ob = ob;
-            this.render(true);
-        }
-      });
+      if (type === "obChanged") {
+        this.ob = ob;
+        this.render(true);
+      }
+    });
   }
 
   changeOb(ob) {
-   
-    if(ob < 1) {
+
+    if (ob < 1) {
       ob = 1;
     }
     this.ob = ob
@@ -89,7 +89,7 @@ export class PoolPanel extends Application {
   }
 
   sendObChangedEvent(ob) {
-    game.socket.emit(SOCKET_NAME, {type: "obChanged", ob: ob} )
+    game.socket.emit(SOCKET_NAME, { type: "obChanged", ob: ob })
   }
 
   getShade() {
@@ -112,7 +112,7 @@ export class PoolPanel extends Application {
 
   cycleShade() {
     this.shadeIndex++;
-    if(this.shadeIndex >= this.shades.length)
+    if (this.shadeIndex >= this.shades.length)
       this.shadeIndex = 0;
   }
 
@@ -123,53 +123,17 @@ export class PoolPanel extends Application {
     let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob)
     await pool.roll()
 
-
-  //  let roll = await this.rollDice(this.numDice, open, shadeToTarget(this.shade))
-   // let evalData = this.evaluateRoll(this.numDice, roll, this.ob)
-    //let evalData = pool.data
-    await this.sendRollToChat(pool.data)
+    await this.sendRollToChat({
+      ...pool.data,
+      allowFate: open || pool.data.sixes,
+      allowDeeds: true
+    })
   }
 
-  // async rollPoolOpen() {
-
-  // }
-
-  // async rollDice(numDice, isOpen, target) {
-  //   console.log(`rolling! ${numDice} dice`)
-  //   const roll = await new Roll(`${numDice}d6${isOpen ? 'x6' : ''}cs>${target}`).evaluate({ async: true });
-  //   if (game.dice3d) {
-  //     return game.dice3d.showForRoll(roll, game.user, true, null, false)
-  //       .then(_ => roll);
-  //   }
-
-  //   return roll
-  // }
-
-  // evaluateRoll(numRolled, roll, ob) {
-  //   console.log("roll terms", roll.terms);
-  //   const successes = roll.terms[0].results.filter((r) => r.success)
-  //   const sixes = roll.terms[0].results.filter((r) => r.result == 6)
-  //   const passedTest = successes.length >= ob
-  //   const totalDice = numRolled//roll.terms[0].number
-  //   let data = {
-  //     ob,
-  //     passedTest,
-  //     totalDice,
-  //     sixes: sixes.length,
-  //     successCount: successes.length,
-  //     rollResults: roll.terms[0].results, // success, result
-  //     difficulty: this.findTestDifficulty(totalDice, ob),
-  //     shade: shadeLabel(this.shade),      
-  //   }
-
-  //   data.json = JSON.stringify(data)
-
-  //   return data;
-  // }
 
   async sendRollToChat(chatData) {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
-    let chat =  await ChatMessage.create({
+    let chat = await ChatMessage.create({
       content: message,
       // speaker: ChatMessage.getSpeaker({ actor })
     });
@@ -179,29 +143,29 @@ export class PoolPanel extends Application {
 
   findTestDifficulty(dice, ob) {
 
-    if(ob > dice) {
+    if (ob > dice) {
       return 'Challenging'
     }
-    else if(dice === 1) {
+    else if (dice === 1) {
       return 'Routine/Difficult'
     }
-    else if(dice <= 3) {
-      if(ob === dice) 
+    else if (dice <= 3) {
+      if (ob === dice)
         return 'Difficult'
-      else 
-        return  'Routine'
+      else
+        return 'Routine'
     }
-    else if(dice <= 7) {
-      if( dice - ob <= 1) 
+    else if (dice <= 7) {
+      if (dice - ob <= 1)
         return 'Difficult'
-      else 
+      else
         return 'Routine'
     }
     else {
-      if( dice - ob <= 2) 
+      if (dice - ob <= 2)
         return 'Difficult'
       else
-      return 'Routine'
+        return 'Routine'
     }
 
   }

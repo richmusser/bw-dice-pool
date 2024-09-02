@@ -2,13 +2,10 @@ import { PoolPanel } from './poolPanel.js'
 import { registerHelpers } from './handlebarHelpers.js'
 import { fateReroll } from './chatMessageHandlers.js';
 
-
 Hooks.on('init', () => {
   registerHelpers();
-
   registerSettings();
 })
-
 
 Hooks.on('ready', () => {
 
@@ -31,7 +28,6 @@ Hooks.on("renderChatMessage", (app, html, data) => {
   // console.log("renderChatMessage", app, data)
   // initChatMessage(html)
 });
-
 
 function registerSettings() {
   game.settings.register('bw-dice-pool', 'obstacle', {

@@ -1,4 +1,4 @@
-import {shadeToTarget, shadeLabel} from './shadeUtils.js'
+import { shadeToTarget, shadeLabel } from './shadeUtils.js'
 
 export class BwDicePool {
 
@@ -41,7 +41,7 @@ export class BwDicePool {
     const sixes = roll.terms[0].results.filter((r) => r.result == 6)
     const passedTest = successes.length >= this.ob
     const totalDice = numRolled//roll.terms[0].number
-   
+
     let data = {
       ob: this.ob,
       passedTest,
@@ -51,7 +51,8 @@ export class BwDicePool {
       rollResults: roll.terms[0].results, // success, result
       difficulty: this.findTestDifficulty(totalDice),
       shadeLabel: shadeLabel(this.shade),
-      shade: this.shade
+      shade: this.shade,
+      isOpen: this.isOpen
     }
 
     data.json = JSON.stringify(data)
