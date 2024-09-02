@@ -139,7 +139,7 @@ export class PoolPanel extends Application {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
     await ChatMessage.create({
       content: message,
-      // speaker: ChatMessage.getSpeaker({ actor })
+      speaker: ChatMessage.getSpeaker()
     });
   }
 
@@ -157,7 +157,7 @@ export class PoolPanel extends Application {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatDieOfFate.hbs", chatData);
     await ChatMessage.create({
       content: message,
-      // speaker: ChatMessage.getSpeaker({ actor })
+      speaker: ChatMessage.getSpeaker()
     });
 
     return chat

@@ -78,7 +78,7 @@ async function sendRollToChat(chatData) {
 	let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
 	let chat = await ChatMessage.create({
 		content: message,
-		// speaker: ChatMessage.getSpeaker({ actor })
+		speaker: ChatMessage.getSpeaker()
 	});
 
 	return chat
