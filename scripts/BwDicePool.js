@@ -48,14 +48,12 @@ export class BwDicePool {
       totalDice,
       sixes: sixes.length,
       successCount: successes.length,
-      rollResults: roll.terms[0].results, // success, result
+      rollResults: roll.terms[0].results, // {success, result}
       difficulty: this.findTestDifficulty(totalDice),
       shadeLabel: shadeLabel(this.shade),
       shade: this.shade,
       isOpen: this.isOpen
     }
-
-    data.json = JSON.stringify(data)
 
     return data;
   }

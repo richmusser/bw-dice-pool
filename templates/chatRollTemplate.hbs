@@ -4,6 +4,13 @@
     {{rerollLabel}} {{difficulty}} Test
   </div>
 
+  {{#if isOpen }}
+   <div class="flexrow chat-flex-center">
+      Open-Ended
+
+   </div>
+  {{/if}}
+
   <div class="flexrow chat-separator">
 
     <div class="">
@@ -66,7 +73,9 @@
   
 
       {{#if allowDeeds}}
-        <div class="btn chat-btn">
+        <div class="btn chat-btn deeds-reroll"
+          data-json="{{json}}"
+        >
           Reroll with Deeds
         </div>
     

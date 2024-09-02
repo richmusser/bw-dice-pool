@@ -116,20 +116,23 @@ export class PoolPanel extends Application {
       this.shadeIndex = 0;
   }
 
-
-
   async rollPool({ open }) {
 
     let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob)
     await pool.roll()
 
-    await this.sendRollToChat({
+    const chatData = {
       ...pool.data,
       allowFate: open || pool.data.sixes,
-      allowDeeds: true
-    })
-  }
+      allowDeeds: true,
+      didDeeds: false,
+      didFate: false
+    }
 
+    chatData.json = JSON.stringify(chatData)
+
+    await this.sendRollToChat(chatData)
+  }
 
   async sendRollToChat(chatData) {
     let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
@@ -167,6 +170,5 @@ export class PoolPanel extends Application {
       else
         return 'Routine'
     }
-
   }
 }

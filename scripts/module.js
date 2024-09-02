@@ -1,6 +1,6 @@
 import { PoolPanel } from './poolPanel.js'
 import { registerHelpers } from './handlebarHelpers.js'
-import { fateReroll } from './chatMessageHandlers.js';
+import { fateReroll, deedsReroll } from './chatMessageHandlers.js';
 
 Hooks.on('init', () => {
   registerHelpers();
@@ -14,8 +14,11 @@ Hooks.on('ready', () => {
     game.poolPanel.socketListen();
 
     $(document).on('click', '.fate-reroll', (e)=> {
-      fateReroll(e.target)
-     
+      fateReroll(e.target)     
+    })
+
+    $(document).on('click', '.deeds-reroll', (e)=> {
+      deedsReroll(e.target)     
     })
 });
 
