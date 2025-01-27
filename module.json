@@ -7,7 +7,7 @@
     "minimumCoreVersion": "0.7.9",
     "compatibleCoreVersion": "11",
     "esmodules": [
-      "scripts/module.js"
+      "dist/module.js"
     ],
     "styles": [
       "styles/module.css"
