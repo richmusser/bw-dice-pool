@@ -6,14 +6,16 @@ export class BwDicePool {
   numDice = 1;
   isOpen = false;
   ob = 1;
+  usingPersona = false;
 
   data = {}
 
-  constructor(shade, numDice, isOpen, ob) {
+  constructor(shade, numDice, isOpen, ob, usingPersona) {
     this.numDice = numDice;
     this.isOpen = isOpen;
     this.ob = ob;
     this.shade = shade;
+    this.usingPersona = usingPersona;
   }
 
 
@@ -52,13 +54,18 @@ export class BwDicePool {
       difficulty: this.findTestDifficulty(totalDice),
       shadeLabel: shadeLabel(this.shade),
       shade: this.shade,
-      isOpen: this.isOpen
+      isOpen: this.isOpen,
+      usingPersona: this.usingPersona
     }
 
     return data;
   }
 
   findTestDifficulty(dice) {
+
+    if(this.usingPersona) {
+      dice--;
+    }
 
     if (this.ob > dice) {
       return 'Challenging'

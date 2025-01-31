@@ -115,6 +115,17 @@
   font-size: 18px;
 }
 
+.btn-persona {
+  border: 1px solid transparent;
+  padding: 0 3px;
+}
+
+.btn-persona.on {
+  border: 1px solid white;
+}
+
+
+
 .bw-chat-messge > div {
   text-align: center;
 }

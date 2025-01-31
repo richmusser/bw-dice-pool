@@ -6,14 +6,19 @@
       <div class="flexrow align-center">
         {{!-- Dice control buttons --}}
         <div class="pool-controls flexcol align-center">
-          <div class="btn btn-dice dice-increase-button" title="Increase Dice Pool">
+          <div class="btn btn-dice dice-increase-button" >
             <i class="fas fa-plus"></i>
 
           </div>
 
-          <div class="btn btn-dice dice-decrease-button" title="Decrase Dice Pool">
+          <div class="btn btn-dice dice-decrease-button">
             <i class="fas fa-minus"></i>
           </div>
+
+          <div class="btn btn-persona {{#if usingPersona}}on{{/if}}">
+            <span style="font-size: 16px">P</span>
+          </div>
+          
 
         </div>
 

@@ -10,7 +10,8 @@ export class PoolPanel extends Application {
   shade = 'B'
 
   shades = ['B', 'G', 'W']
-  shadeIndex = 0;
+  shadeIndex = 0
+  usingPersona = false
 
   constructor(mods, help) {
     super({
@@ -69,6 +70,23 @@ export class PoolPanel extends Application {
     html.find('.btn-ob-decrease').on('click', () => {
       this.changeOb(this.ob - 1);
     })
+
+    html.find('.btn-persona').on('click', () => {
+
+      this.usingPersona = !this.usingPersona
+      this.render()
+
+      // let btn = html.find('.btn-persona')
+
+      // if(this.usingPersona) {
+      //   btn.addClass('on')
+      // }
+      // else {
+      //   btn.removeClass('on')
+      // }
+      
+    })
+
   }
 
   socketListen() {
@@ -109,6 +127,7 @@ export class PoolPanel extends Application {
     data.ob = this.ob
     data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
+    data.usingPersona = this.usingPersona
 
     console.log("DATA", data)
 
@@ -123,7 +142,7 @@ export class PoolPanel extends Application {
 
   async rollPool({ open }) {
 
-    let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob)
+    let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob, this.usingPersona)
     await pool.roll()
 
     const chatData = {
@@ -131,7 +150,8 @@ export class PoolPanel extends Application {
       allowFate: open || pool.data.sixes,
       allowDeeds: true,
       didDeeds: false,
-      didFate: false
+      didFate: false,
+      usingPersona: this.usingPersona
     }
 
     chatData.json = JSON.stringify(chatData)
