@@ -161,6 +161,9 @@ export class PoolPanel extends Application {
       content: message,
       speaker: ChatMessage.getSpeaker()
     });
+
+    this.usingPersona = false;
+    this.render();
   }
 
   async rollDieOfFate(){
