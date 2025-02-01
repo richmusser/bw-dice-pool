@@ -1,6 +1,6 @@
 
 #bw-dice-pool {
-   color: white;
+  color: white;
   position: fixed;
   bottom: 90px;
   margin-left: 50%;
@@ -53,6 +53,8 @@
 
 .pool .roll-controls {
   color: white;
+  display: flex;
+  gap: 8;
 }
 
 .vs-divider {
@@ -124,8 +126,6 @@
   border: 1px solid white;
 }
 
-
-
 .bw-chat-messge > div {
   text-align: center;
 }
@@ -151,13 +151,11 @@
 .chat-roll-result {
   font-size: 1.5em;
   padding: 4px;
-
 }
 
 .chat-roll-result.success {
   color: green;
   background: rgba(0,200,0, 0.3);
-
 }
 
 .chat-roll-result.failed {
@@ -184,19 +182,16 @@
   color: green;
   background: rgba(0,200,0, 0.3);
   border-color: green; 
-
 }
 
 .chat-die.failed {
   color: red;
   background: rgba(200,0,0, 0.3);
   border-color: red; 
-
 }
 
 .chat-flex-center {
   justify-content: center;
-
 }
 
 .bw-chat-message .vs-divider {

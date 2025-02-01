@@ -13,6 +13,10 @@ export class PoolPanel extends Application {
   shadeIndex = 0
   usingPersona = false
 
+  numPersona = 0
+  personaMode = false
+
+
   constructor(mods, help) {
     super({
       template: "modules/bw-dice-pool/templates/poolPanel.hbs",
@@ -29,15 +33,32 @@ export class PoolPanel extends Application {
 
   activateListeners(html) {
     html.find('.dice-increase-button').on('click', () => {
-      this.numDice++
-      this.render();
+
+      if(this.personaMode) {
+        if(this.numPersona < 3){
+          this.numPersona++
+          this.render();  
+        }
+      }
+      else {
+        this.numDice++
+        this.render();  
+      }
+
     })
 
     html.find('.dice-decrease-button').on('click', () => {
-      if (this.numDice > 1) {
-        this.numDice--
+
+      if(this.personaMode) {
+        if(this.numPersona > 0) {
+          this.numPersona--
+        }
       }
-      //game.burningwheel.macros.rollSkill(0,0)
+      else {
+        if (this.numDice > 1) {
+          this.numDice--
+        }
+      }
       this.render();
     })
 
@@ -73,18 +94,8 @@ export class PoolPanel extends Application {
 
     html.find('.btn-persona').on('click', () => {
 
-      this.usingPersona = !this.usingPersona
+      this.personaMode = !this.personaMode
       this.render()
-
-      // let btn = html.find('.btn-persona')
-
-      // if(this.usingPersona) {
-      //   btn.addClass('on')
-      // }
-      // else {
-      //   btn.removeClass('on')
-      // }
-      
     })
 
   }
@@ -127,9 +138,10 @@ export class PoolPanel extends Application {
     data.ob = this.ob
     data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
-    data.usingPersona = this.usingPersona
+    data.numPersona = this.numPersona
+    data.personaMode = this.personaMode
 
-    console.log("DATA", data)
+    console.log("BW Dice Pool Data", data)
 
     return data;
   }
@@ -142,7 +154,7 @@ export class PoolPanel extends Application {
 
   async rollPool({ open }) {
 
-    let pool = new BwDicePool(this.getShade(), this.numDice, open, this.ob, this.usingPersona)
+    let pool = new BwDicePool(this.getShade(), this.numDice + this.numPersona, open, this.ob, this.numPersona)
     await pool.roll()
 
     const chatData = {
@@ -151,7 +163,6 @@ export class PoolPanel extends Application {
       allowDeeds: true,
       didDeeds: false,
       didFate: false,
-      usingPersona: this.usingPersona
     }
 
     chatData.json = JSON.stringify(chatData)

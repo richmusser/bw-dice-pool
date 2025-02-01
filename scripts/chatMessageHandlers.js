@@ -15,7 +15,7 @@ export async function fateReroll(target) {
 	//if the roll was already open ended, simply reroll one traitor
 	let numDice = originalRollData.isOpen ? 1 : originalRollData.sixes
 
-	let pool = new BwDicePool(shade, numDice, true, 1, originalRollData.usingPersona)
+	let pool = new BwDicePool(shade, numDice, true, 1, originalRollData.numPersona)
 	await pool.roll()
 
 	let rerollData = {
@@ -26,11 +26,11 @@ export async function fateReroll(target) {
 	rerollData.passedTest = successCount >= originalRollData.ob
 	rerollData.successCount = successCount
 	rerollData.rollResults.push(...pool.data.rollResults)
-	rerollData.rerollLabel = 'Fate Reroll: '
+	rerollData.rerollLabel = 'Fate Roll: '
 	rerollData.allowFate = false;
 	rerollData.allowDeeds = !originalRollData.didDeeds;
 	rerollData.didFate = true;
-	rerollData.usingPersona = originalRollData.usingPersona;
+	rerollData.numPersona = originalRollData.numPersona;
 
 	rerollData.json = JSON.stringify(rerollData)
 
@@ -52,7 +52,7 @@ export async function deedsReroll(target) {
 
 	let numDice = originalRollData.totalDice - originalRollData.successCount
 
-	let pool = new BwDicePool(shade, numDice, originalRollData.isOpen, 1, originalRollData.usingPersona)
+	let pool = new BwDicePool(shade, numDice, originalRollData.isOpen, 1, originalRollData.numPersona)
 	await pool.roll()
 
 	let rerollData = {
@@ -65,11 +65,11 @@ export async function deedsReroll(target) {
 	rerollData.passedTest = successCount >= originalRollData.ob
 	rerollData.successCount = successCount
 	rerollData.rollResults.push(...pool.data.rollResults)
-	rerollData.rerollLabel = 'Deeds Reroll: '
+	rerollData.rerollLabel = 'Deeds Roll: '
 	rerollData.allowFate = !originalRollData.didFate && (rerollData.sixes || originalRollData.isOpen);
 	rerollData.allowDeeds = false;
 	rerollData.didDeeds = true;
-	rerollData.usingPersona = originalRollData.usingPersona;
+	rerollData.numPersona = originalRollData.numPersona;
 
 	rerollData.json = JSON.stringify(rerollData)
 

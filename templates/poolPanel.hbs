@@ -15,7 +15,7 @@
             <i class="fas fa-minus"></i>
           </div>
 
-          <div class="btn btn-persona {{#if usingPersona}}on{{/if}}">
+          <div class="btn btn-persona {{#if personaMode}}on{{/if}}">
             <span style="font-size: 16px">P</span>
           </div>
           
@@ -32,11 +32,19 @@
             {{#times numDice}}
             <i class="die fas fa-dice-d6"></i>
             {{/times}}
-          </div>
+            {{#times numPersona}}
+            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+            {{/times}}
+          </div>          
           {{/if}}
           {{#unless renderDice}}
           <div class="dice-numeric">
             <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
+          </div>
+          <div>
+          {{#times numPersona}}
+            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+          {{/times}}
           </div>
           {{/unless}}
 

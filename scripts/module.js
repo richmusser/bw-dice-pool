@@ -13,6 +13,11 @@ Hooks.on('ready', () => {
     game.poolPanel.render(true);
     game.poolPanel.socketListen();
 
+    const hotbarEl = $(document.getElementById("hotbar"));
+    console.log('hotbarEl position', hotbarEl.position())
+    console.log('hotbarEl height', hotbarEl.height())
+   
+
     $(document).on('click', '.fate-reroll', (e)=> {
       fateReroll(e.target)     
     })
