@@ -221,3 +221,7 @@
   font-size:  3em;
   font-weight: bold;
 }
+
+.flush-bottom {
+  bottom: 12px !important;
+}

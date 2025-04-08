@@ -140,6 +140,7 @@ export class PoolPanel extends Application {
     data.isGm = game.user.isGM
     data.numPersona = this.numPersona
     data.personaMode = this.personaMode
+    data.flushToBottom = true // only enable if macro bar is hidden, such as with Minimal UI module
 
     console.log("BW Dice Pool Data", data)
 
