@@ -2,55 +2,54 @@
 
   <div class="flexrow">
 
-    <div class="pool flexrow gap align-center">
-      <div class="flexrow align-center">
-        {{!-- Dice control buttons --}}
-        <div class="pool-controls flexcol align-center">
-          <div class="btn btn-dice dice-increase-button" >
-            <i class="fas fa-plus"></i>
-
-          </div>
-
-          <div class="btn btn-dice dice-decrease-button">
-            <i class="fas fa-minus"></i>
-          </div>
-
-          <div class="btn btn-persona {{#if personaMode}}on{{/if}}">
-            <span style="font-size: 16px">P</span>
-          </div>
-          
+    <div class="pool flexrow ">
+    
+      {{!-- Dice control buttons --}}
+      <div class="pool-controls flexcol">
+        <div class="btn btn-dice dice-increase-button" >
+          <i class="fas fa-plus"></i>
 
         </div>
 
-        {{!-- Dice --}}
-        <div class="dice-area">
-           <div class="btn btn-shade">
-            <span>{{shade}}</span>
-          </div>
-          {{#if renderDice}}
-          <div class="dice-display">
-            {{#times numDice}}
-            <i class="die fas fa-dice-d6"></i>
-            {{/times}}
-            {{#times numPersona}}
-            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
-            {{/times}}
-          </div>          
-          {{/if}}
-          {{#unless renderDice}}
-          <div class="dice-numeric">
-            <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
-          </div>
-          <div>
-          {{#times numPersona}}
-            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
-          {{/times}}
-          </div>
-          {{/unless}}
-
+        <div class="btn btn-dice dice-decrease-button">
+          <i class="fas fa-minus"></i>
         </div>
+
+        <div class="btn btn-persona {{#if personaMode}}on{{/if}}">
+          <span style="font-size: 16px">P</span>
+        </div>
+        
 
       </div>
+
+      {{!-- Dice --}}
+      <div class="dice-area">
+          <div class="btn btn-shade">
+          <span>{{shade}}</span>
+        </div>
+        {{#if renderDice}}
+        <div class="dice-display">
+          {{#times numDice}}
+          <i class="die fas fa-dice-d6"></i>
+          {{/times}}
+          {{#times numPersona}}
+          <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+          {{/times}}
+        </div>          
+        {{/if}}
+        {{#unless renderDice}}
+        <div class="dice-numeric">
+          <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
+        </div>
+        <div>
+        {{#times numPersona}}
+          <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+        {{/times}}
+        </div>
+        {{/unless}}
+
+      </div>
+     
     </div>
 
     {{!-- vs divider --}}
