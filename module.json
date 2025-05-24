@@ -16,6 +16,6 @@
       "styles/module.css"
     ],
     "socket": true,
-    "manifest": "https://yourwebsite.com/path/to/module.json",
-    "download": "https://yourwebsite.com/path/to/your-module.zip"
+    "manifest": "https://raw.githubusercontent.com/richmusser/bw-dice-pool/refs/heads/main/module.json",
+    "download": "https://github.com/richmusser/bw-dice-pool/archive/refs/tags/1.0.zip"
   }
