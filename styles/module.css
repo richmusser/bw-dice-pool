@@ -11,11 +11,13 @@
   height: 175px;
   border-radius: 4px; 
   padding: 8px;
-  transition: height 0.3s ease;
+  transition: all 0.3s ease;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 #bw-dice-pool.expanded {
-  height: 350px;
+  height: 550px !important;
 }
 
 .split-sections {
@@ -25,10 +27,13 @@
   margin-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-top: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-#bw-dice-pool.expanded .split-sections {
+.split-sections.visible {
   display: flex;
+  opacity: 1;
 }
 
 .split-section {

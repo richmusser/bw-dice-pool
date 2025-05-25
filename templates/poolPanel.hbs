@@ -1,4 +1,4 @@
-<div id="bw-dice-pool" class="flexcol {{ternary flushToBottom 'flush-bottom' ''}} " >
+<div id="bw-dice-pool" class="flexcol {{ternary flushToBottom 'flush-bottom' ''}} {{ternary isExpanded 'expanded' ''}}" >
 
   <div class="flexrow">
 
@@ -8,7 +8,6 @@
       <div class="pool-controls flexcol">
         <div class="btn btn-dice dice-increase-button" >
           <i class="fas fa-plus"></i>
-
         </div>
 
         <div class="btn btn-dice dice-decrease-button">
@@ -18,36 +17,33 @@
         <div class="btn btn-persona {{#if personaMode}}on{{/if}}">
           <span style="font-size: 16px">P</span>
         </div>
-        
-
       </div>
 
       {{!-- Dice --}}
       <div class="dice-area">
           <div class="btn btn-shade">
-          <span>{{shade}}</span>
-        </div>
-        {{#if renderDice}}
-        <div class="dice-display">
-          {{#times numDice}}
-          <i class="die fas fa-dice-d6"></i>
-          {{/times}}
+            <span>{{shade}}</span>
+          </div>
+          {{#if renderDice}}
+          <div class="dice-display">
+            {{#times numDice}}
+            <i class="die fas fa-dice-d6"></i>
+            {{/times}}
+            {{#times numPersona}}
+            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+            {{/times}}
+          </div>          
+          {{/if}}
+          {{#unless renderDice}}
+          <div class="dice-numeric">
+            <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
+          </div>
+          <div>
           {{#times numPersona}}
-          <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
           {{/times}}
-        </div>          
-        {{/if}}
-        {{#unless renderDice}}
-        <div class="dice-numeric">
-          <span>{{numDice}}</span> <i class="die fas fa-dice-d6"></i>
-        </div>
-        <div>
-        {{#times numPersona}}
-          <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
-        {{/times}}
-        </div>
-        {{/unless}}
-
+          </div>
+          {{/unless}}
       </div>
      
     </div>
@@ -59,7 +55,6 @@
 
     {{!-- ob area--}}
     <div class="ob-area">
-
       <div class="flexrow align-center">
         <div>
           <div class="ob-label">Ob</div>
@@ -77,15 +72,12 @@
             </div>
           </div>
         {{/if}}
-
       </div>
-
     </div>
-
   </div>
 
   {{!-- Split sections that appear when expanded --}}
-  <div class="split-sections">
+  <div class="split-sections {{ternary isExpanded 'visible' ''}}">
     <div class="split-section attack-section">
       <div class="section-header">Attack</div>
       <div class="pool flexrow">
@@ -98,9 +90,18 @@
           </div>
         </div>
         <div class="dice-area">
+          {{#if renderDice}}
+          <div class="dice-display">
+            {{#times attackDice}}
+            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+            {{/times}}
+          </div>          
+          {{/if}}
+          {{#unless renderDice}}
           <div class="dice-numeric">
             <span>{{attackDice}}</span> <i class="die fas fa-dice-d6"></i>
           </div>
+          {{/unless}}
         </div>
       </div>
     </div>
@@ -117,9 +118,18 @@
           </div>
         </div>
         <div class="dice-area">
+          {{#if renderDice}}
+          <div class="dice-display">
+            {{#times defendDice}}
+            <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
+            {{/times}}
+          </div>          
+          {{/if}}
+          {{#unless renderDice}}
           <div class="dice-numeric">
             <span>{{defendDice}}</span> <i class="die fas fa-dice-d6"></i>
           </div>
+          {{/unless}}
         </div>
       </div>
     </div>
@@ -127,23 +137,20 @@
 
   {{!-- roll controls --}}
   <div class="roll-controls flexrow gap ">
+    <div class="btn btn-roll roll">
+      Roll
+    </div>
 
-      <div class="btn btn-roll roll">
-        Roll
-      </div>
+    <div class="btn btn-roll roll-open">
+      Roll Open-Ended
+    </div>
 
-      <div class="btn btn-roll roll-open">
-        Roll Open-Ended
-      </div>
+    <div class="btn btn-roll roll-dof">
+      Die of Fate
+    </div>
 
-      <div class="btn btn-roll roll-dof">
-        Die of Fate
-      </div>
-
-      <div class="btn btn-roll split-pool">
-        Split Pool
-      </div>
-
+    <div class="btn btn-roll split-pool">
+      Split Pool
+    </div>
   </div>
-
 </div>

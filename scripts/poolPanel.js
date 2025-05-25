@@ -112,21 +112,32 @@ export class PoolPanel extends Application {
     //  this.render();
     })
 
-    html.find('.split-pool').on('click', () => {
+    html.find('.split-pool').on('click', (event) => {
+      console.log('Split pool button clicked');
       this.isExpanded = !this.isExpanded;
+      console.log('isExpanded:', this.isExpanded);
+      
+      // Force immediate DOM update
       const panel = document.getElementById('bw-dice-pool');
       if (this.isExpanded) {
+        panel.style.height = '350px';
         panel.classList.add('expanded');
         // Initialize split pool with equal distribution
         this.attackDice = Math.floor(this.numDice / 2);
         this.defendDice = this.numDice - this.attackDice;
       } else {
+        panel.style.height = '175px';
         panel.classList.remove('expanded');
         // Reset split pool
         this.attackDice = 0;
         this.defendDice = 0;
       }
-      this.render();
+      
+      console.log('Panel classes after toggle:', panel.classList);
+      console.log('Panel height:', panel.style.height);
+      
+      // Force a re-render
+      this.render(true);
     })
 
     html.find('.btn-shade').on('click', (elem) => {
@@ -185,16 +196,16 @@ export class PoolPanel extends Application {
   getData() {
     const data = super.getData();
     data.numDice = this.numDice;
-
     data.renderDice = data.numDice < 10
     data.ob = this.ob
     data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
     data.numPersona = this.numPersona
     data.personaMode = this.personaMode
-    data.flushToBottom = true // only enable if macro bar is hidden, such as with Minimal UI module
+    data.flushToBottom = true
     data.attackDice = this.attackDice
     data.defendDice = this.defendDice
+    data.isExpanded = this.isExpanded
 
     console.log("BW Dice Pool Data", data)
 
