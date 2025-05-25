@@ -8,6 +8,9 @@ export class PoolPanel extends Application {
   numDice = 4
   ob = 3
   shade = 'B'
+  isExpanded = false
+  attackDice = 0
+  defendDice = 0
 
   shades = ['B', 'G', 'W']
   shadeIndex = 0
@@ -62,6 +65,38 @@ export class PoolPanel extends Application {
       this.render();
     })
 
+    html.find('.attack-increase-button').on('click', () => {
+      if (this.attackDice < this.numDice) {
+        this.attackDice++
+        this.defendDice = this.numDice - this.attackDice
+        this.render()
+      }
+    })
+
+    html.find('.attack-decrease-button').on('click', () => {
+      if (this.attackDice > 0) {
+        this.attackDice--
+        this.defendDice = this.numDice - this.attackDice
+        this.render()
+      }
+    })
+
+    html.find('.defend-increase-button').on('click', () => {
+      if (this.defendDice < this.numDice) {
+        this.defendDice++
+        this.attackDice = this.numDice - this.defendDice
+        this.render()
+      }
+    })
+
+    html.find('.defend-decrease-button').on('click', () => {
+      if (this.defendDice > 0) {
+        this.defendDice--
+        this.attackDice = this.numDice - this.defendDice
+        this.render()
+      }
+    })
+
     html.find('.roll').on('click', async () => {
       await this.rollPool({ open: false });
     //  this.render();
@@ -75,6 +110,23 @@ export class PoolPanel extends Application {
     html.find('.roll-dof').on('click', async () => {
       await this.rollDieOfFate();
     //  this.render();
+    })
+
+    html.find('.split-pool').on('click', () => {
+      this.isExpanded = !this.isExpanded;
+      const panel = document.getElementById('bw-dice-pool');
+      if (this.isExpanded) {
+        panel.classList.add('expanded');
+        // Initialize split pool with equal distribution
+        this.attackDice = Math.floor(this.numDice / 2);
+        this.defendDice = this.numDice - this.attackDice;
+      } else {
+        panel.classList.remove('expanded');
+        // Reset split pool
+        this.attackDice = 0;
+        this.defendDice = 0;
+      }
+      this.render();
     })
 
     html.find('.btn-shade').on('click', (elem) => {
@@ -141,6 +193,8 @@ export class PoolPanel extends Application {
     data.numPersona = this.numPersona
     data.personaMode = this.personaMode
     data.flushToBottom = true // only enable if macro bar is hidden, such as with Minimal UI module
+    data.attackDice = this.attackDice
+    data.defendDice = this.defendDice
 
     console.log("BW Dice Pool Data", data)
 

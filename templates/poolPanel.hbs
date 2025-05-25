@@ -84,6 +84,47 @@
 
   </div>
 
+  {{!-- Split sections that appear when expanded --}}
+  <div class="split-sections">
+    <div class="split-section attack-section">
+      <div class="section-header">Attack</div>
+      <div class="pool flexrow">
+        <div class="pool-controls flexcol">
+          <div class="btn btn-dice attack-increase-button">
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="btn btn-dice attack-decrease-button">
+            <i class="fas fa-minus"></i>
+          </div>
+        </div>
+        <div class="dice-area">
+          <div class="dice-numeric">
+            <span>{{attackDice}}</span> <i class="die fas fa-dice-d6"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="split-section defend-section">
+      <div class="section-header">Defend</div>
+      <div class="pool flexrow">
+        <div class="pool-controls flexcol">
+          <div class="btn btn-dice defend-increase-button">
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="btn btn-dice defend-decrease-button">
+            <i class="fas fa-minus"></i>
+          </div>
+        </div>
+        <div class="dice-area">
+          <div class="dice-numeric">
+            <span>{{defendDice}}</span> <i class="die fas fa-dice-d6"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {{!-- roll controls --}}
   <div class="roll-controls flexrow gap ">
 
@@ -97,6 +138,10 @@
 
       <div class="btn btn-roll roll-dof">
         Die of Fate
+      </div>
+
+      <div class="btn btn-roll split-pool">
+        Split Pool
       </div>
 
   </div>
