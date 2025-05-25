@@ -206,6 +206,8 @@ export class PoolPanel extends Application {
     data.attackDice = this.attackDice
     data.defendDice = this.defendDice
     data.isExpanded = this.isExpanded
+    data.renderAttackDice = this.attackDice < 10
+    data.renderDefendDice = this.defendDice < 10
 
     console.log("BW Dice Pool Data", data)
 

@@ -90,16 +90,16 @@
           </div>
         </div>
         <div class="dice-area">
-          {{#if renderDice}}
+          {{#if renderAttackDice}}
           <div class="dice-display">
             {{#times attackDice}}
             <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
             {{/times}}
           </div>          
           {{/if}}
-          {{#unless renderDice}}
+          {{#unless renderAttackDice}}
           <div class="dice-numeric">
-            <span>{{attackDice}}</span> <i class="die fas fa-dice-d6"></i>
+            <span>{{attackDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
           </div>
           {{/unless}}
         </div>
@@ -118,16 +118,16 @@
           </div>
         </div>
         <div class="dice-area">
-          {{#if renderDice}}
+          {{#if renderDefendDice}}
           <div class="dice-display">
             {{#times defendDice}}
             <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
             {{/times}}
           </div>          
           {{/if}}
-          {{#unless renderDice}}
+          {{#unless renderDefendDice}}
           <div class="dice-numeric">
-            <span>{{defendDice}}</span> <i class="die fas fa-dice-d6"></i>
+            <span>{{defendDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
           </div>
           {{/unless}}
         </div>
