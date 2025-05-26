@@ -78,58 +78,60 @@
 
   {{!-- Split sections that appear when expanded --}}
   <div class="split-sections {{ternary isBloodyVs 'visible' ''}}">
-    <div class="split-section attack-section">
-      <div class="section-header">Attack</div>
-      <div class="pool flexrow">
-        <div class="pool-controls flexcol">
-          <div class="btn btn-dice attack-increase-button">
-            <i class="fas fa-plus"></i>
+    <div class="split-sections-row">
+      <div class="split-section attack-section">
+        <div class="section-header">Attack</div>
+        <div class="pool flexrow">
+          <div class="pool-controls flexcol">
+            <div class="btn btn-dice attack-increase-button">
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="btn btn-dice attack-decrease-button">
+              <i class="fas fa-minus"></i>
+            </div>
           </div>
-          <div class="btn btn-dice attack-decrease-button">
-            <i class="fas fa-minus"></i>
+          <div class="dice-area">
+            {{#if renderAttackDice}}
+            <div class="dice-display">
+              {{#times attackDice}}
+              <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+              {{/times}}
+            </div>          
+            {{/if}}
+            {{#unless renderAttackDice}}
+            <div class="dice-numeric">
+              <span>{{attackDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
+            </div>
+            {{/unless}}
           </div>
-        </div>
-        <div class="dice-area">
-          {{#if renderAttackDice}}
-          <div class="dice-display">
-            {{#times attackDice}}
-            <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
-            {{/times}}
-          </div>          
-          {{/if}}
-          {{#unless renderAttackDice}}
-          <div class="dice-numeric">
-            <span>{{attackDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(255, 0,0,.75)"></i>
-          </div>
-          {{/unless}}
         </div>
       </div>
-    </div>
 
-    <div class="split-section defend-section">
-      <div class="section-header">Defend</div>
-      <div class="pool flexrow">
-        <div class="pool-controls flexcol">
-          <div class="btn btn-dice defend-increase-button">
-            <i class="fas fa-plus"></i>
+      <div class="split-section defend-section">
+        <div class="section-header">Defend</div>
+        <div class="pool flexrow">
+          <div class="pool-controls flexcol">
+            <div class="btn btn-dice defend-increase-button">
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="btn btn-dice defend-decrease-button">
+              <i class="fas fa-minus"></i>
+            </div>
           </div>
-          <div class="btn btn-dice defend-decrease-button">
-            <i class="fas fa-minus"></i>
+          <div class="dice-area">
+            {{#if renderDefendDice}}
+            <div class="dice-display">
+              {{#times defendDice}}
+              <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
+              {{/times}}
+            </div>          
+            {{/if}}
+            {{#unless renderDefendDice}}
+            <div class="dice-numeric">
+              <span>{{defendDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
+            </div>
+            {{/unless}}
           </div>
-        </div>
-        <div class="dice-area">
-          {{#if renderDefendDice}}
-          <div class="dice-display">
-            {{#times defendDice}}
-            <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
-            {{/times}}
-          </div>          
-          {{/if}}
-          {{#unless renderDefendDice}}
-          <div class="dice-numeric">
-            <span>{{defendDice}}</span> <i class="die fas fa-dice-d6" style="color:rgba(0, 0,255,.75)"></i>
-          </div>
-          {{/unless}}
         </div>
       </div>
     </div>

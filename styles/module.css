@@ -36,10 +36,18 @@
   opacity: 1;
 }
 
+.split-sections-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: space-between;
+}
+
 .split-section {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   padding: 8px;
+  flex: 1;
 }
 
 .section-header {
