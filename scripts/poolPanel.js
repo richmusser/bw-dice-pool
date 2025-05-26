@@ -8,7 +8,7 @@ export class PoolPanel extends Application {
   numDice = 4
   ob = 3
   shade = 'B'
-  isExpanded = false
+  isBloodyVs = false
   attackDice = 0
   defendDice = 0
 
@@ -114,19 +114,16 @@ export class PoolPanel extends Application {
 
     html.find('.split-pool').on('click', (event) => {
       console.log('Split pool button clicked');
-      this.isExpanded = !this.isExpanded;
-      console.log('isExpanded:', this.isExpanded);
+      this.isBloodyVs = !this.isBloodyVs;
+      console.log('isBloodyVs:', this.isBloodyVs);
       
-      // Force immediate DOM update
       const panel = document.getElementById('bw-dice-pool');
-      if (this.isExpanded) {
-        panel.style.height = '350px';
+      if (this.isBloodyVs) {
         panel.classList.add('expanded');
         // Initialize split pool with equal distribution
         this.attackDice = Math.floor(this.numDice / 2);
         this.defendDice = this.numDice - this.attackDice;
       } else {
-        panel.style.height = '175px';
         panel.classList.remove('expanded');
         // Reset split pool
         this.attackDice = 0;
@@ -134,9 +131,6 @@ export class PoolPanel extends Application {
       }
       
       console.log('Panel classes after toggle:', panel.classList);
-      console.log('Panel height:', panel.style.height);
-      
-      // Force a re-render
       this.render(true);
     })
 
@@ -205,7 +199,7 @@ export class PoolPanel extends Application {
     data.flushToBottom = true
     data.attackDice = this.attackDice
     data.defendDice = this.defendDice
-    data.isExpanded = this.isExpanded
+    data.isBloodyVs = this.isBloodyVs
     data.renderAttackDice = this.attackDice < 10
     data.renderDefendDice = this.defendDice < 10
 
@@ -221,25 +215,69 @@ export class PoolPanel extends Application {
   }
 
   async rollPool({ open }) {
+    if (this.isBloodyVs) {
+      // Roll attack pool
+      let attackPool = new BwDicePool(this.getShade(), this.attackDice, open, this.ob, 0)
+      await attackPool.roll()
 
-    let pool = new BwDicePool(this.getShade(), this.numDice + this.numPersona, open, this.ob, this.numPersona)
-    await pool.roll()
+      const attackChatData = {
+        ...attackPool.data,
+        allowFate: open || attackPool.data.sixes,
+        allowDeeds: true,
+        didDeeds: false,
+        didFate: false,
+        rerollLabel: 'Attack Roll: '
+      }
 
-    const chatData = {
-      ...pool.data,
-      allowFate: open || pool.data.sixes,
-      allowDeeds: true,
-      didDeeds: false,
-      didFate: false,
+      attackChatData.json = JSON.stringify(attackChatData)
+
+      let attackMessage = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", attackChatData);
+      await ChatMessage.create({
+        content: attackMessage,
+        speaker: ChatMessage.getSpeaker()
+      });
+
+      // Roll defend pool
+      let defendPool = new BwDicePool(this.getShade(), this.defendDice, open, this.ob, 0)
+      await defendPool.roll()
+
+      const defendChatData = {
+        ...defendPool.data,
+        allowFate: open || defendPool.data.sixes,
+        allowDeeds: true,
+        didDeeds: false,
+        didFate: false,
+        rerollLabel: 'Defend Roll: '
+      }
+
+      defendChatData.json = JSON.stringify(defendChatData)
+
+      let defendMessage = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", defendChatData);
+      await ChatMessage.create({
+        content: defendMessage,
+        speaker: ChatMessage.getSpeaker()
+      });
+    } else {
+      // Original single pool roll
+      let pool = new BwDicePool(this.getShade(), this.numDice + this.numPersona, open, this.ob, this.numPersona)
+      await pool.roll()
+
+      const chatData = {
+        ...pool.data,
+        allowFate: open || pool.data.sixes,
+        allowDeeds: true,
+        didDeeds: false,
+        didFate: false,
+      }
+
+      chatData.json = JSON.stringify(chatData)
+
+      let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
+      await ChatMessage.create({
+        content: message,
+        speaker: ChatMessage.getSpeaker()
+      });
     }
-
-    chatData.json = JSON.stringify(chatData)
-
-    let message = await renderTemplate("modules/bw-dice-pool/templates/chatRollTemplate.hbs", chatData);
-    await ChatMessage.create({
-      content: message,
-      speaker: ChatMessage.getSpeaker()
-    });
 
     this.usingPersona = false;
     this.render();
