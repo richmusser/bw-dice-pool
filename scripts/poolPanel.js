@@ -36,7 +36,6 @@ export class PoolPanel extends Application {
 
   activateListeners(html) {
     html.find('.dice-increase-button').on('click', () => {
-
       if(this.personaMode) {
         if(this.numPersona < 3){
           this.numPersona++
@@ -45,13 +44,15 @@ export class PoolPanel extends Application {
       }
       else {
         this.numDice++
+        if (this.isBloodyVs) {
+          // Add new dice to attack pool by default
+          this.attackDice++
+        }
         this.render();  
       }
-
     })
 
     html.find('.dice-decrease-button').on('click', () => {
-
       if(this.personaMode) {
         if(this.numPersona > 0) {
           this.numPersona--
@@ -60,6 +61,15 @@ export class PoolPanel extends Application {
       else {
         if (this.numDice > 1) {
           this.numDice--
+          if (this.isBloodyVs) {
+            // Remove from attack pool first if possible
+            if (this.attackDice > 0) {
+              this.attackDice--
+            } else {
+              // If attack pool is empty, remove from defence pool
+              this.defendDice--
+            }
+          }
         }
       }
       this.render();
