@@ -1,6 +1,6 @@
 import { PoolPanel } from './poolPanel.js'
 import { registerHelpers } from './handlebarHelpers.js'
-import { fateReroll, deedsReroll } from './chatMessageHandlers.js';
+import { fateReroll, deedsReroll, awardTest } from './chatMessageHandlers.js';
 
 Hooks.on('init', async() => {
   registerHelpers();
@@ -25,6 +25,10 @@ Hooks.on('ready', () => {
 
     $(document).on('click', '.deeds-reroll', (e)=> {
       deedsReroll(e.target)     
+    })
+
+    $(document).on('click', '.award-test', (e) => {
+      awardTest(e.target);
     })
 });
 

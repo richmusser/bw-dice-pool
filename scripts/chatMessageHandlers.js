@@ -1,4 +1,5 @@
 import { BwDicePool } from './BwDicePool.js'
+import { getActor } from './getActor.js'
 
 /**
  * Chat handler for rerolling with Fate (Luck)
@@ -84,4 +85,88 @@ async function sendRollToChat(chatData) {
 	});
 
 	return chat
+}
+
+export async function awardTest(target) {
+  // console.log("Award Test clicked", target);
+  let originalRollData = JSON.parse(target.dataset.json);
+
+  console.log("Original Roll Data:", originalRollData);
+
+  // Get the actor from the controlled token
+  let actor = getActor();
+  
+  if(!actor)  {
+	ui.notifications.warn("No controlled token found. Please select a token to award a test.");
+	return;
+  }
+
+  console.log("Actor skills:", actor.system.skills);
+
+  if(!actor.system[originalRollData.abilityType]) 
+	return;
+
+  if(originalRollData.abilityType === 'armor') 
+	return;
+
+  let abilities = actor.system[originalRollData.abilityType];
+
+  let ability = null;
+
+  if(originalRollData.abilityType === 'skills') {
+	// Find the skill by name
+	let skill = Object.keys(abilities).map( aKey => abilities[aKey]).find(s => s.name.trim() === originalRollData.abilityName);
+	if(skill) {
+	  ability = skill;
+    }	
+  }
+  else {
+	ability = abilities[originalRollData.abilityName]
+  }
+
+  let difficultyData = null;
+
+  if(ability) {
+	switch(originalRollData.difficulty) {
+		case 'Routine':
+			difficultyData = ability.routine;		
+		break;
+		case 'Difficult':
+			difficultyData = ability.difficult;
+		break;
+		case 'Challenging':		
+			difficultyData = ability.challenge;
+		break;
+	}
+
+  	if(!difficultyData) {
+		ui.notifications.warn(`Routine tests do not progress ${originalRollData.abilityLabel}.`);
+		return;
+	}
+
+	if( originalRollData.abilityName === 'perception' && !originalRollData.passedTest) {
+		ui.notifications.warn(`Only successful perception tests can be awarded progress.`);
+		return;
+	}
+
+	let didAward = false;
+
+	for(let key in Object.keys(difficultyData)) {
+		let value = difficultyData[key];
+
+		if(value === false) {
+			difficultyData[key] = true;
+			didAward = true;
+			break;
+		}
+	}
+
+	if(didAward) {
+		ui.notifications.info(`Awarding ${originalRollData.difficulty} test for ${originalRollData.abilityLabel}.`);
+	}
+	else {
+		ui.notifications.warn(`No progress awarded for ${originalRollData.abilityLabel}.`);
+	}	
+ 
+  }
 }

@@ -1,4 +1,5 @@
 import { shadeToTarget, shadeLabel } from './shadeUtils.js'
+import { getActor } from './getActor.js'
 import { BwDicePool } from './BwDicePool.js'
 
 const SOCKET_NAME = 'module.bw-dice-pool'
@@ -19,9 +20,12 @@ export class PoolPanel extends Application {
   numPersona = 0
   personaMode = false
 
+  abilityLabel = ''
   abilityName = ''
   abilityExponent = 0
   abilityShade = ''
+  abilityType = ''
+  abilityCanProgress = false
 
   recentAbilities = []
 
@@ -176,10 +180,13 @@ export class PoolPanel extends Application {
     // Add an event listener for the 'change' event
     abilitySelect.addEventListener('change', (event) => {
         const selectedOption = event.target.options[event.target.selectedIndex];
-        const exponent = selectedOption.getAttribute('data-exponent'); 
+        const exponent = parseInt(selectedOption.getAttribute('data-exponent'), 10);
         const shade = selectedOption.getAttribute('data-shade');
+        const type = selectedOption.getAttribute('data-type');
+        const label = selectedOption.getAttribute('data-label');
+        const canProgress = selectedOption.getAttribute('data-canprogress') == 'true'
         const name = selectedOption.value;
-        this.handleAbilitySelected(name, exponent, shade);
+        this.handleAbilitySelected(name, label, exponent, shade, type, canProgress);
     });
   }
 
@@ -247,6 +254,7 @@ export class PoolPanel extends Application {
   }
 
   async rollPool({ open }) {
+
     if (this.isBloodyVs) {
       // Roll attack pool
       let attackPool = new BwDicePool(this.getShade(), this.attackDice, open, this.ob, 0)
@@ -260,8 +268,11 @@ export class PoolPanel extends Application {
         didFate: false,
         rerollLabel: 'Attack Roll: ',
         abilityName: this.abilityName,
+        abilityLabel: this.abilityLabel,
         abilityShade: this.abilityShade,
-        abilityExponent: this.abilityExponent ? this.abilityExponent : ''
+        abilityExponent: this.abilityExponent ? this.abilityExponent : '',
+        abilityType : this.abilityType,
+        abilityCanProgress: this.abilityCanProgress
       }
 
       attackChatData.json = JSON.stringify(attackChatData)
@@ -304,8 +315,11 @@ export class PoolPanel extends Application {
         didDeeds: false,
         didFate: false, 
         abilityName: this.abilityName,
+        abilityLabel: this.abilityLabel,
         abilityShade: this.abilityShade,
-        abilityExponent: this.abilityExponent ? this.abilityExponent : ''
+        abilityExponent: this.abilityExponent ? this.abilityExponent : '',
+        abilityType: this.abilityType,
+        abilityCanProgress: this.abilityCanProgress
       }
 
       chatData.json = JSON.stringify(chatData)
@@ -334,9 +348,12 @@ export class PoolPanel extends Application {
     this.recentAbilities = this.recentAbilities.filter(ability => this.abilityName !== ability.name);
 
     this.recentAbilities.unshift({
+      label: this.abilityLabel,
       name: this.abilityName,
       exponent: this.abilityExponent,
-      shade: this.abilityShade
+      shade: this.abilityShade,
+      canProgress: this.abilityCanProgress,
+      type: this.abilityType
     })
 
     if(this.recentAbilities.length > 5) {
@@ -344,6 +361,8 @@ export class PoolPanel extends Application {
     }
 
     this.abilityName = '';
+    this.abilityType = '';
+    this.abilityLabel = '';
 
   }
 
@@ -396,29 +415,8 @@ export class PoolPanel extends Application {
     }
   }
 
-  getActor() {
-        // Get the first controlled token's actor
-        // This assumes that the user has at least one token controlled
-        // If no tokens are controlled, it will return undefined
-
-      let controlledTokens = canvas.tokens.controlled;
-      console.log("Controlled Tokens:", controlledTokens);
-
-    if (controlledTokens.length > 0) {
-      let firstControlledToken = controlledTokens[0];
-      let actor = firstControlledToken.actor;
-      console.log("The actor of the first controlled token is:", actor);
-      return actor; // Return the actor object
-      // You can then work with the 'actor' object, e.g., actor.name, actor.system.hp.value
-    } else {
-      console.log("No tokens are currently controlled by the user.");
-      return null;
-    }
-  }
-
   addAbilitiesToRenderData(data) {
-
-     const actor = this.getActor();
+    const actor = getActor();
     console.log("Current Actor?", actor);
     if (actor && actor?.system?.skills) { 
       console.log("Current Actor:", actor);
@@ -427,8 +425,6 @@ export class PoolPanel extends Application {
     else {
       this.addDefaultAbilitiesToRenderData(data);
     }
-    
-
   }
 
   addActorAbilitiesToRenderData(actor, data) {
@@ -442,9 +438,12 @@ export class PoolPanel extends Application {
        let skillsFiltered = Object.keys(skills).map(key => skills[key]).filter(skill => !!skill.name);
       data.skills = skillsFiltered.map(skill => {
         return {
-          name: skill.name,
+          name: skill.name.trim(),
+          label: skill.name.trim(),
           exponent: skill.exponent,
-          shade: skill.shade
+          shade: skill.shade,
+          type: 'skills',
+          canProgress: true
         };
       });
 
@@ -454,9 +453,12 @@ export class PoolPanel extends Application {
         let attributesMapped = Object.keys(attributes).map(attributeName => {
           let attribute = attributes[attributeName];
           return {
-            name: this.formatAbilityName(attributeName),
+            label: this.formatAbilityName(attributeName),
+            name: attributeName,
             exponent: attribute.exponent, 
-            shade: attribute.shade
+            shade: attribute.shade,
+            type: 'attributes',
+            canProgress: true
           };
         })
 
@@ -469,9 +471,12 @@ export class PoolPanel extends Application {
         let statsMapped = Object.keys(stats).map(statName => {
           let stat = stats[statName];
           return {
-            name: this.formatAbilityName(statName),
+            label: this.formatAbilityName(statName),
+            name: statName,
             exponent: stat.exponent, 
-            shade: stat.shade
+            shade: stat.shade,
+            type: 'stats',
+            canProgress: true
           };
         })
 
@@ -497,9 +502,12 @@ export class PoolPanel extends Application {
           }
 
           return {
-            name: this.formatAbilityName(armorLabel),
+            label: this.formatAbilityName(armorLabel),
+            name: armorName,
             exponent: armorDice, 
-            shade: 'B'
+            shade: 'B',
+            type: 'armor',
+            canProgress: false
           };
         })
 
@@ -513,77 +521,79 @@ export class PoolPanel extends Application {
   addDefaultAbilitiesToRenderData(data) {
 
     data.skills = [
-      { name: 'Savage Attack'},
-      { name: 'Melee Weapon' },
-      { name: 'Ranged Weapon' },
-      { name: 'Sword' },
-      { name: 'Spear' }, 
-      { name: 'Bow' },
-      { name: 'Crossbow' },
-      { name: 'Brawling' },
-      { name: 'Mace' },
-      { name: 'Knife'},
-      { name: 'Axe' },
-      { name: 'Sorcery'},
-      { name: 'Stealth' }      
+      { name: 'Savage Attack', label: 'Savage Attack', canProgress: false },
+      { name: 'Melee Weapon', label: 'Melee Weapon', canProgress: false },
+      { name: 'Ranged Weapon', label: 'Ranged Weapon', canProgress: false },  
+      { name: 'Sword', label: 'Sword', canProgress: false },
+      { name: 'Spear', label: 'Spear', canProgress: false }, 
+      { name: 'Bow', label: 'Bow', canProgress: false },
+      { name: 'Crossbow', label: 'Crossbow', canProgress: false },
+      { name: 'Brawling', label: 'Brawling', canProgress: false },
+      { name: 'Mace', label: 'Mace', canProgress: false },
+      { name: 'Knife', label: 'Knife', canProgress: false },
+      { name: 'Axe', label: 'Axe', canProgress: false },
+      { name: 'Sorcery', label: 'Sorcery', canProgress: false },
+      { name: 'Stealth', label: 'Stealth', canProgress: false },      
     ];
 
     data.stats = [
-      { name: 'Will' },
-      { name: 'Power' },
-      { name: 'Agility' },
-      { name: 'Perception' },
-      { name: 'Forte' },
-      { name: 'Speed' }
+      { name: 'Will', label: 'Will', canProgress: false },
+      { name: 'Power', label: 'Power', canProgress: false },
+      { name: 'Agility', label: 'Agility', canProgress: false },
+      { name: 'Perception', label: 'Perception', canProgress: false },
+      { name: 'Forte', label: 'Forte', canProgress: false },
+      { name: 'Speed', label: 'Speed', canProgress: false },
     ]
 
     data.attributes = [
-      { name: 'Health' },
-      { name: 'Steel' },
-      { name: 'Reflexes' },
-      { name: 'Mortal Wounds' }
+      { name: 'Health', label: 'Health' },
+      { name: 'Steel', label: 'Steel' },
+      { name: 'Reflexes', label: 'Reflexes' },
+      { name: 'Mortal Wounds', label: 'Mortal Wounds' },
     ];
 
     data.armor = [
-      { name: 'Gambeson', exponent: 1, shade: 'B' },
-      { name: 'Reinforced Leather', exponent: 2, shade: 'B' },
-      { name: 'Light Mail', exponent: 3, shade: 'B' },
-      { name: 'Heavy Mail', exponent: 4, shade: 'B' },
-      { name: 'Plate Armor', exponent: 5, shade: 'B' },
-      { name: 'Full Plate', exponent: 6, shade: 'B' },
-      { name: 'Thick Hide', exponent: 1, shade: 'B' },
-      { name: 'Tough Hide', exponent: 2, shade: 'B' },
-      { name: 'Scaled Skin', exponent: 1, shade: 'B' },
-      { name: 'Stone Skin', exponent: 4, shade: 'B' },
-      { name: 'Buckler', exponent: 1, shade: 'B' },
-      { name: 'Target Shield', exponent: 2, shade: 'B' },
-      { name: 'Heater Shield', exponent: 3, shade: 'B' },
-      { name: 'Great Shield', exponent: 4, shade: 'B' }
+      { name: 'Gambeson', label: 'Gambeson', exponent: 1, shade: 'B', canProgress: false },
+      { name: 'Reinforced Leather', label: 'Reinforced Leather', exponent: 2, shade: 'B', canProgress: false },
+      { name: 'Light Mail', label: 'Light Mail', exponent: 3, shade: 'B', canProgress: false },
+      { name: 'Heavy Mail', label: 'Heavy Mail', exponent: 4, shade: 'B', canProgress: false },
+      { name: 'Plate Armor', label: 'Plate Armor', exponent: 5, shade: 'B', canProgress: false },
+      { name: 'Full Plate', label: 'Full Plate', exponent: 6, shade: 'B', canProgress: false },
+      { name: 'Thick Hide', label: 'Thick Hide', exponent: 1, shade: 'B', canProgress: false },
+      { name: 'Tough Hide',label: 'Tough Hide', exponent: 2, shade: 'B', canProgress: false },
+      { name: 'Scaled Skin', label: 'Scaled Skin', exponent: 1, shade: 'B' , canProgress: false},
+      { name: 'Stone Skin', label: 'Stone Skin', exponent: 4, shade: 'B', canProgress: false },
+      { name: 'Buckler', label: 'Buckler', exponent: 1, shade: 'B', canProgress: false },
+      { name: 'Target Shield', label: 'Target Shield', exponent: 2, shade: 'B', canProgress: false },
+      { name: 'Heater Shield', label: 'Heater Shield', exponent: 3, shade: 'B', canProgress: false },
+      { name: 'Great Shield', label: 'Great Shield', exponent: 4, shade: 'B', canProgress: false }
     ];
 
     data.recentAbilities = this.recentAbilities;
 
   }
 
-  handleAbilitySelected(name, exponent, shade) {
-    console.log("Selected ability:", name, exponent, shade);
+  handleAbilitySelected(name, label, exponent, shade, type, canProgress) {
+    console.log("Selected ability:", name, exponent, shade, type, canProgress);
 
     if(!name) {
       this.abilityName = '';
       return;
     };
 
-    this.abilityName = name; 
-  
-    if(exponent && !isNaN(exponent)) {
-      let numericExponent = parseInt(exponent, 10) || 1;;
 
+    this.abilityName = name;
+    this.abilityLabel = label;
+    this.abilityType = type;
+    this.abilityCanProgress = canProgress;
+  
+    if(exponent ) {
       if(this.isBloodyVs) {
-        this.attackDice = numericExponent;
+        this.attackDice = exponent;
         this.defendDice = 0;
       }
 
-      this.numDice = numericExponent;
+      this.numDice = exponent;
       this.abilityExponent = exponent;
     }
     else {
@@ -596,9 +606,7 @@ export class PoolPanel extends Application {
     }
     else {
       this.abilityShade = '';
-    }
-
-    
+    }  
     this.render();
   }
 
@@ -607,7 +615,7 @@ export class PoolPanel extends Application {
     let capitalized =  name.charAt(0).toUpperCase() + name.slice(1).replace(/_/g, ' ');
 
      return capitalized.replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Split camelCase or PascalCase
-            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Handle acronyms
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2').trim() // Handle acronyms
            
   }
 }

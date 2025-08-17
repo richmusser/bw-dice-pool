@@ -2,7 +2,7 @@
 
   {{#if abilityName}}
     <div class="chat-separator chat-message-med ability-name">
-       {{rerollLabel}} {{abilityName}} {{abilityShade}}{{abilityExponent}}
+       {{rerollLabel}} {{abilityLabel}} {{abilityShade}}{{abilityExponent}}
     </div>
      <div class="chat-separator chat-message-sm difficulty">
       {{difficulty}} Test
@@ -97,5 +97,18 @@
     
       {{/if}}
     </div>
+
+    {{#if abilityName}}
+      {{#if abilityCanProgress}}
+      <div class="flexrow">
+        <div class="btn chat-btn award-test"
+            data-json="{{json}}"
+          >
+            Award {{difficulty}} {{abilityLabel}} Test
+          </div>
+      </div>
+      {{/if}}
+    {{/if}}
+
 
 </div>
