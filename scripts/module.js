@@ -2,9 +2,10 @@ import { PoolPanel } from './poolPanel.js'
 import { registerHelpers } from './handlebarHelpers.js'
 import { fateReroll, deedsReroll } from './chatMessageHandlers.js';
 
-Hooks.on('init', () => {
+Hooks.on('init', async() => {
   registerHelpers();
   registerSettings();
+  await registerPartials();
 })
 
 Hooks.on('ready', () => {
@@ -43,4 +44,23 @@ function registerSettings() {
     type: Number, 
     default: 3
   })
+}
+
+async function registerPartials() {
+
+  // Register Handlebars partials from array of file paths
+    const partialPaths = [
+        'modules/bw-dice-pool/templates/partials/abilitySelector.hbs'
+    ];
+
+    for (const partialPath of partialPaths) {
+        try {
+            const partialTemplate = await fetch(partialPath).then(r => r.text());
+            Handlebars.registerPartial(partialPath, partialTemplate);
+            console.log(`Registered partial: ${partialPath}`);
+        } catch (error) {
+            console.error(`Failed to register partial ${partialPath}:`, error);
+        }
+    }
+
 }

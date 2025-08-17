@@ -8,7 +8,7 @@
   gap: 10px;
   background: rgba(0, 0, 0, 0.5);
   width: 400px;
-  height: 175px;
+  height: 180px;
   border-radius: 4px; 
   padding: 8px;
   transition: all 0.3s ease;
@@ -17,7 +17,7 @@
 }
 
 #bw-dice-pool.expanded {
-  height: 320px !important;
+  height: 350px !important;
 }
 
 .split-sections {
@@ -273,4 +273,17 @@
 
 .flush-bottom {
   bottom: 12px !important;
+}
+
+#ability-select {
+  color: white;
+}
+
+#ability-select option, optgroup {
+  color: black;
+}
+
+.split-pool.expanded {
+  background-color:  rgba(255,0,0,.25);
+
 }

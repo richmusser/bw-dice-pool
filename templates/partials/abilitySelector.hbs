@@ -1,0 +1,42 @@
+      <select id="ability-select" class="ability-select" >
+        <option value="" {{isSelected name ../abilityName}}>--Select Ability--</option>
+
+        {{#each recentAbilities}}
+          <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" {{isSelected name ../abilityName}}>{{name}} - {{shade}}{{exponent}}</option>
+        {{/each}}
+
+        {{#if skills}}
+          <optgroup label="Skills">
+          {{#each skills}}
+            <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" {{isSelected name ../abilityName}}>{{name}} - {{shade}}{{exponent}}</option>
+          {{/each}}
+          </optgroup>
+        {{/if}}
+
+        
+        {{#if stats}}
+          <optgroup label="Stats">
+          {{#each stats}}
+            <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" {{isSelected name ../abilityName}}>{{name}} - {{shade}}{{exponent}}</option>
+          {{/each}}
+          </optgroup>
+        {{/if}}
+
+        {{#if attributes}}
+          <optgroup label="Attributes">
+          {{#each attributes}}
+            <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" {{isSelected name ../abilityName}}>{{name}} - {{shade}}{{exponent}}</option>
+          {{/each}}
+          </optgroup>
+        {{/if}}
+
+        {{#if armor}}
+          <optgroup label="Armor">
+          {{#each armor}}
+            <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" {{isSelected name ../abilityName}}>{{name}} - {{shade}}{{exponent}}</option>
+          {{/each}}
+          </optgroup>
+        {{/if}}
+
+       
+      </select>

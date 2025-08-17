@@ -139,6 +139,7 @@ export class PoolPanel extends Application {
         // Initialize split pool with equal distribution
         this.attackDice = Math.floor(this.numDice / 2);
         this.defendDice = this.numDice - this.attackDice;
+        this.ob = 1;
       } else {
         panel.classList.remove('expanded');
         // Reset split pool
@@ -174,23 +175,12 @@ export class PoolPanel extends Application {
 
     // Add an event listener for the 'change' event
     abilitySelect.addEventListener('change', (event) => {
-
         const selectedOption = event.target.options[event.target.selectedIndex];
-
-
-        // Get the value of the selected option        
-
         const exponent = selectedOption.getAttribute('data-exponent'); 
         const shade = selectedOption.getAttribute('data-shade');
         const name = selectedOption.value;
-
         this.handleAbilitySelected(name, exponent, shade);
-
     });
-
-
-
-
   }
 
   socketListen() {
@@ -227,10 +217,8 @@ export class PoolPanel extends Application {
 
     const data = super.getData();
 
-    // get abilityData
     this.addAbilitiesToRenderData(data);
    
-
     data.abilityName = this.abilityName;
 
     data.numDice = this.numDice;
@@ -270,7 +258,10 @@ export class PoolPanel extends Application {
         allowDeeds: true,
         didDeeds: false,
         didFate: false,
-        rerollLabel: 'Attack Roll: '
+        rerollLabel: 'Attack Roll: ',
+        abilityName: this.abilityName,
+        abilityShade: this.abilityShade,
+        abilityExponent: this.abilityExponent ? this.abilityExponent : ''
       }
 
       attackChatData.json = JSON.stringify(attackChatData)
@@ -488,19 +479,13 @@ export class PoolPanel extends Application {
       }
 
       if(actor?.system?.gear?.armor) {
-        console.log("**** Actor Armor:");
         let armor = actor.system.gear.armor;
         // get the abilities which are stored as keys on the abilities object
         let armorMapped = Object.keys(armor).map(armorName => {
-
-          if(armorName === 'clumsyWeight') {
-            return;
-          }
-
           let armorData = armor[armorName];
-
-          console.log("**** Actor Armor:", armorName, armorData);
-
+          if(!armorData || !armorData.dice) {
+            return {};
+          }
           //the exponent of armor is from an object with boolean keys and the sum of the values
           let armorDice = Object.keys(armorData.dice).reduce((sum, key) => {
             return sum + (armorData.dice[key] ? 1 : 0);  
@@ -518,17 +503,10 @@ export class PoolPanel extends Application {
           };
         })
 
-        data.armor = armorMapped       
-        
-                console.log("**** Actor Armor DONE");
-
+        data.armor = armorMapped.filter(armor => !!armor.name);       
       }
 
-
       data.recentAbilities = this.recentAbilities;
-
-      console.log("Actor Skills:", data.skills);
-
     }
   }
 
@@ -598,7 +576,14 @@ export class PoolPanel extends Application {
     this.abilityName = name; 
   
     if(exponent && !isNaN(exponent)) {
-      this.numDice = parseInt(exponent, 10) || 1; // Default to 1 if exponent is not a number
+      let numericExponent = parseInt(exponent, 10) || 1;;
+
+      if(this.isBloodyVs) {
+        this.attackDice = numericExponent;
+        this.defendDice = 0;
+      }
+
+      this.numDice = numericExponent;
       this.abilityExponent = exponent;
     }
     else {
