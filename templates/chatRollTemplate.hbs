@@ -1,8 +1,19 @@
 <div class="bw-chat-message flexcol">
 
-  <div class="chat-separator chat-message-med difficulty">
-    {{rerollLabel}} {{difficulty}} Test
-  </div>
+  {{#if abilityName}}
+    <div class="chat-separator chat-message-med ability-name">
+       {{rerollLabel}} {{abilityName}} {{abilityShade}}{{abilityExponent}}
+    </div>
+     <div class="chat-separator chat-message-sm difficulty">
+      {{difficulty}} Test
+    </div>
+  {{/if}}
+  {{#unless abilityName}}
+    <div class="chat-separator chat-message-med difficulty">
+      {{rerollLabel}} {{difficulty}} Test
+    </div>
+  {{/unless}}
+
 
   {{#if numPersona}}
     <div class="" style="margin-bottom: 4px;">{{ numPersona }} Persona Dice</div>

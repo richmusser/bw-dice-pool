@@ -151,6 +151,12 @@
   padding: 4px;
 }
 
+.chat-message-sm {
+  font-size: 1em;
+  padding: 4px;
+}
+
+
 .chat-roll-result {
   font-size: 1.5em;
   padding: 4px;

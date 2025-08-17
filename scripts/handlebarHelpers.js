@@ -19,6 +19,10 @@ export function registerHelpers() {
         return cond ? v1 : v2;
      });
 
+    Handlebars.registerHelper('isSelected', function(currentValue, selectedValue) {
+        return (currentValue === selectedValue) ? 'selected' : '';
+    });
+
  
 }
 

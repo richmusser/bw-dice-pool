@@ -28,7 +28,7 @@ export class BwDicePool {
   async rollDice() {
     const target = shadeToTarget(this.shade)
     console.log(`rolling! ${this.numDice} dice`)
-    const roll = await new Roll(`${this.numDice}d6${this.isOpen ? 'x6' : ''}cs>${target}`).evaluate({ async: true });
+    const roll = await new Roll(`${this.numDice}d6${this.isOpen ? 'x6' : ''}cs>${target}`).evaluate();
     if (game.dice3d) {
       return game.dice3d.showForRoll(roll, game.user, true, null, false)
         .then(_ => roll);

@@ -16,6 +16,12 @@ export class PoolPanel extends Application {
   numPersona = 0
   personaMode = false
 
+  abilityName = ''
+  abilityExponent = 0
+  abilityShade = ''
+
+  recentAbilities = []
+
 
   constructor(mods, help) {
     super({
@@ -93,10 +99,30 @@ export class PoolPanel extends Application {
     })
 
     html.find('.btn-persona').on('click', () => {
-
       this.personaMode = !this.personaMode
       this.render()
     })
+
+    const abilitySelect = html.find('#ability-select')[0]; 
+
+    // Add an event listener for the 'change' event
+    abilitySelect.addEventListener('change', (event) => {
+
+        const selectedOption = event.target.options[event.target.selectedIndex];
+
+
+        // Get the value of the selected option        
+
+        const exponent = selectedOption.getAttribute('data-exponent'); 
+        const shade = selectedOption.getAttribute('data-shade');
+        const name = selectedOption.value;
+
+        this.handleAbilitySelected(name, exponent, shade);
+
+    });
+
+
+
 
   }
 
@@ -131,7 +157,15 @@ export class PoolPanel extends Application {
   }
 
   getData() {
+
     const data = super.getData();
+
+    // get abilityData
+    this.addAbilitiesToRenderData(data);
+   
+
+    data.abilityName = this.abilityName;
+
     data.numDice = this.numDice;
 
     data.renderDice = data.numDice < 10
@@ -164,6 +198,9 @@ export class PoolPanel extends Application {
       allowDeeds: true,
       didDeeds: false,
       didFate: false,
+      abilityName: this.abilityName,
+      abilityShade: this.abilityShade,
+      abilityExponent: this.abilityExponent ? this.abilityExponent : ''
     }
 
     chatData.json = JSON.stringify(chatData)
@@ -175,7 +212,33 @@ export class PoolPanel extends Application {
     });
 
     this.usingPersona = false;
+
+    this.afterAbilityRoll();
+
     this.render();
+  }
+
+  afterAbilityRoll() {
+
+    if(!this.abilityName) {
+      return;
+    }
+    
+    // Remove any existing ability with the same name
+    this.recentAbilities = this.recentAbilities.filter(ability => this.abilityName !== ability.name);
+
+    this.recentAbilities.unshift({
+      name: this.abilityName,
+      exponent: this.abilityExponent,
+      shade: this.abilityShade
+    })
+
+    if(this.recentAbilities.length > 5) {
+      this.recentAbilities.pop(); 
+    }
+
+    this.abilityName = '';
+
   }
 
   async rollDieOfFate(){
@@ -226,4 +289,252 @@ export class PoolPanel extends Application {
         return 'Routine'
     }
   }
+
+  getActor() {
+        // Get the first controlled token's actor
+        // This assumes that the user has at least one token controlled
+        // If no tokens are controlled, it will return undefined
+
+      let controlledTokens = canvas.tokens.controlled;
+      console.log("Controlled Tokens:", controlledTokens);
+
+    if (controlledTokens.length > 0) {
+      let firstControlledToken = controlledTokens[0];
+      let actor = firstControlledToken.actor;
+      console.log("The actor of the first controlled token is:", actor);
+      return actor; // Return the actor object
+      // You can then work with the 'actor' object, e.g., actor.name, actor.system.hp.value
+    } else {
+      console.log("No tokens are currently controlled by the user.");
+      return null;
+    }
+  }
+
+  addAbilitiesToRenderData(data) {
+
+     const actor = this.getActor();
+    console.log("Current Actor?", actor);
+    if (actor && actor?.system?.skills) { 
+      console.log("Current Actor:", actor);
+      this.addActorAbilitiesToRenderData(actor, data);
+    }
+    else {
+      this.addDefaultAbilitiesToRenderData(data);
+    }
+    
+
+  }
+
+  addActorAbilitiesToRenderData(actor, data) {
+    if(!actor) {
+      return;
+    }
+
+    if(actor?.system?.skills) {
+      let skills = actor.system.skills;
+      // get the skills which are stored as keys on the skills object
+       let skillsFiltered = Object.keys(skills).map(key => skills[key]).filter(skill => !!skill.name);
+      data.skills = skillsFiltered.map(skill => {
+        return {
+          name: skill.name,
+          exponent: skill.exponent,
+          shade: skill.shade
+        };
+      });
+
+      if(actor?.system?.attributes) {
+        let attributes = actor.system.attributes;
+        // get the abilities which are stored as keys on the abilities object
+        let attributesMapped = Object.keys(attributes).map(attributeName => {
+          let attribute = attributes[attributeName];
+          return {
+            name: this.formatAbilityName(attributeName),
+            exponent: attribute.exponent, 
+            shade: attribute.shade
+          };
+        })
+
+        data.attributes = attributesMapped        
+      }
+
+      if(actor?.system?.stats) {
+        let stats = actor.system.stats;
+        // get the abilities which are stored as keys on the abilities object
+        let statsMapped = Object.keys(stats).map(statName => {
+          let stat = stats[statName];
+          return {
+            name: this.formatAbilityName(statName),
+            exponent: stat.exponent, 
+            shade: stat.shade
+          };
+        })
+
+        data.stats = statsMapped        
+      }
+
+      if(actor?.system?.gear?.armor) {
+        console.log("**** Actor Armor:");
+        let armor = actor.system.gear.armor;
+        // get the abilities which are stored as keys on the abilities object
+        let armorMapped = Object.keys(armor).map(armorName => {
+
+          if(armorName === 'clumsyWeight') {
+            return;
+          }
+
+          let armorData = armor[armorName];
+
+          console.log("**** Actor Armor:", armorName, armorData);
+
+          //the exponent of armor is from an object with boolean keys and the sum of the values
+          let armorDice = Object.keys(armorData.dice).reduce((sum, key) => {
+            return sum + (armorData.dice[key] ? 1 : 0);  
+          }, 0);
+
+          let armorLabel = `${armorName} Armor`;
+          if(armorData.type) {
+            armorLabel += ` (${armorData.type})`;
+          }
+
+          return {
+            name: this.formatAbilityName(armorLabel),
+            exponent: armorDice, 
+            shade: 'B'
+          };
+        })
+
+        data.armor = armorMapped       
+        
+                console.log("**** Actor Armor DONE");
+
+      }
+
+
+      data.recentAbilities = this.recentAbilities;
+
+      console.log("Actor Skills:", data.skills);
+
+    }
+  }
+
+  addDefaultAbilitiesToRenderData(data) {
+
+    data.skills = [
+      { name: 'Savage Attack'},
+      { name: 'Melee Weapon' },
+      { name: 'Ranged Weapon' },
+      { name: 'Sword' },
+      { name: 'Spear' }, 
+      { name: 'Bow' },
+      { name: 'Crossbow' },
+      { name: 'Brawling' },
+      { name: 'Mace' },
+      { name: 'Knife'},
+      { name: 'Axe' },
+      { name: 'Sorcery'},
+      { name: 'Stealth' }      
+    ];
+
+    data.stats = [
+      { name: 'Will' },
+      { name: 'Power' },
+      { name: 'Agility' },
+      { name: 'Perception' },
+      { name: 'Forte' },
+      { name: 'Speed' }
+    ]
+
+    data.attributes = [
+      { name: 'Health' },
+      { name: 'Steel' },
+      { name: 'Reflexes' },
+      { name: 'Mortal Wounds' }
+    ];
+
+    data.armor = [
+      { name: 'Gambeson', exponent: 1, shade: 'B' },
+      { name: 'Reinforced Leather', exponent: 2, shade: 'B' },
+      { name: 'Light Mail', exponent: 3, shade: 'B' },
+      { name: 'Heavy Mail', exponent: 4, shade: 'B' },
+      { name: 'Plate Armor', exponent: 5, shade: 'B' },
+      { name: 'Full Plate', exponent: 6, shade: 'B' },
+      { name: 'Thick Hide', exponent: 1, shade: 'B' },
+      { name: 'Tough Hide', exponent: 2, shade: 'B' },
+      { name: 'Scaled Skin', exponent: 1, shade: 'B' },
+      { name: 'Stone Skin', exponent: 4, shade: 'B' }
+      { name: 'Buckler', exponent: 1, shade: 'B' },
+      { name: 'Target Shield', exponent: 2, shade: 'B' },
+      { name: 'Heater Shield', exponent: 3, shade: 'B' },
+      { name: 'Great Shield', exponent: 4, shade: 'B' }
+    ];
+
+    data.recentAbilities = this.recentAbilities;
+
+  }
+
+  handleAbilitySelected(name, exponent, shade) {
+    console.log("Selected ability:", name, exponent, shade);
+
+    if(!name) {
+      this.abilityName = '';
+      return;
+    };
+
+    this.abilityName = name; 
+  
+    if(exponent && !isNaN(exponent)) {
+      this.numDice = parseInt(exponent, 10) || 1; // Default to 1 if exponent is not a number
+      this.abilityExponent = exponent;
+    }
+    else {
+      this.abilityExponent = 0;
+    }
+
+    if(shade && this.shades.includes(shade)) {
+      this.shadeIndex = this.shades.indexOf(shade) !== -1 ? this.shades.indexOf(shade) : 0; // Default to first shade if not found
+      this.abilityShade = shade;
+    }
+    else {
+      this.abilityShade = '';
+    }
+
+    
+    this.render();
+  }
+
+  formatAbilityName(name) {
+    // Convert the name to a more readable format
+    let capitalized =  name.charAt(0).toUpperCase() + name.slice(1).replace(/_/g, ' ');
+
+     return capitalized.replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Split camelCase or PascalCase
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Handle acronyms
+           
+  }
 }
+
+Hooks.on("updateActor", (actor, changed, options, userId) => {
+
+  console.log("Actor updated", actor, changed, options, userId);
+  game.poolPanel.render(true);
+
+  // if (game.poolPanel && game.poolPanel.getActor()?.id === actor.id) {
+  //   console.log("Actor updated, re-rendering pool panel");
+  //   game.poolPanel.render(true);
+  // }
+});
+
+Hooks.on("controlToken", (token, controlled) => {
+  if (controlled) {
+    // A token was selected
+    console.log(`Token ${token.name} was selected.`);
+       game.poolPanel.render(true);
+
+    // Your custom logic for when a token is selected
+  } else {
+    // A token was deselected
+    console.log(`Token ${token.name} was deselected.`);
+    // Your custom logic for when a token is deselected
+  }
+
+
+});
