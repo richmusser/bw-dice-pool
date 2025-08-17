@@ -1,0 +1,17 @@
+# Compiled output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# IDE and OS files
+.idea/
+*.vscode/
+*.swp
+*.log
+.DS_Store
+
+# Environment files
+.env
+.env.*
