@@ -1,8 +1,11 @@
 <div id="bw-dice-pool" class="flexcol {{ternary flushToBottom 'flush-bottom' ''}} {{ternary isBloodyVs 'expanded' ''}}" >
 
     <div class="flexrow">
-      <div>
+      <div class="flexcol">
         {{> "modules/bw-dice-pool/templates/partials/abilitySelector.hbs"}}    
+      </div>
+      <div class="flexcol">
+       {{> "modules/bw-dice-pool/templates/partials/weaponSelector.hbs"}}           
       </div>
     </div>
 

@@ -1,0 +1,6 @@
+<select id="weapon-select" class="weapon-select" >
+    <option value="" {{isSelected name ../weaponName}}>-- Select Weapon --</option>
+    {{#each weapons}}
+      <option value="{{name}}" data-json="{{json}}" {{isSelected name ../weaponName}}>{{label}}</option>
+    {{/each}}
+</select>

@@ -1,5 +1,5 @@
       <select id="ability-select" class="ability-select" >
-        <option value="" {{isSelected name ../abilityName}}>--Select Ability--</option>
+        <option value="" {{isSelected name ../abilityName}}>-- Select Ability --</option>
 
         {{#each recentAbilities}}
           <option value="{{name}}" data-exponent="{{exponent}}" data-shade="{{shade}}" data-type="{{type}}" data-label="{{label}}" data-canprogress="{{canProgress}}" {{isSelected name ../abilityName}}>{{label}} - {{shade}}{{exponent}}</option>

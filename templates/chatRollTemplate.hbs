@@ -108,6 +108,61 @@
           </div>
       </div>
       {{/if}}
+    {{/if}} 
+
+    {{#if weaponName}}
+        <div class="weapon-chat-panel">    
+          <div class="flexrow">
+            <div class="chat-separator chat-message-md header">
+              Weapon: {{weaponName}}
+            </div>
+          </div>
+          <div class="weapon-stat-grid">
+            <div class="weapon-stat-header">
+              I
+            </div>
+            <div class="weapon-stat-header">
+              M
+            </div>
+            <div class="weapon-stat-header">
+              S
+            </div>
+            <div class="weapon-stat-header">
+              Add
+            </div>
+            <div class="weapon-stat-header">
+              Va
+            </div>
+            <div class="weapon-stat-header">
+              Ws
+            </div>
+            <div class="weapon-stat-header">
+              Len
+            </div>
+      
+            <div class="weapon-stat-value">
+              {{weaponData.shade}}{{weaponData.i}}
+            </div>
+            <div class="weapon-stat-value">
+              {{weaponData.shade}}{{weaponData.m}}  
+            </div>
+            <div class="weapon-stat-value"> 
+              {{weaponData.shade}}{{weaponData.s}}
+            </div>
+            <div class="weapon-stat-value">
+              {{weaponData.add}}  
+            </div>
+            <div class="weapon-stat-value">
+              {{weaponData.va}}
+            </div>
+            <div class="weapon-stat-value">
+              {{weaponData.ws}}
+            </div>    
+            <div class="weapon-stat-value">
+              {{weaponData.length}}
+            </div>            
+        </div>
+
     {{/if}}
 
 

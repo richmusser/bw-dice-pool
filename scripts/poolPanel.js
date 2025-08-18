@@ -27,6 +27,9 @@ export class PoolPanel extends Application {
   abilityType = ''
   abilityCanProgress = false
 
+  weaponName = ''
+  weaponJson = ''
+
   recentAbilities = []
 
 
@@ -188,6 +191,15 @@ export class PoolPanel extends Application {
         const name = selectedOption.value;
         this.handleAbilitySelected(name, label, exponent, shade, type, canProgress);
     });
+
+    const weaponSelect = html.find('#weapon-select')[0];
+
+    weaponSelect.addEventListener('change', (event) => {
+      const selectedOption = event.target.options[event.target.selectedIndex];
+      const weaponJson = selectedOption.getAttribute('data-json');
+      const weaponName = selectedOption.value;
+      this.handleWeaponSelected(weaponName, weaponJson);
+    });
   }
 
   socketListen() {
@@ -225,8 +237,10 @@ export class PoolPanel extends Application {
     const data = super.getData();
 
     this.addAbilitiesToRenderData(data);
+    this.addWeaponsToRenderData(data);
    
     data.abilityName = this.abilityName;
+    data.weaponName = this.weaponName;
 
     data.numDice = this.numDice;
     data.renderDice = data.numDice < 10
@@ -272,7 +286,9 @@ export class PoolPanel extends Application {
         abilityShade: this.abilityShade,
         abilityExponent: this.abilityExponent ? this.abilityExponent : '',
         abilityType : this.abilityType,
-        abilityCanProgress: this.abilityCanProgress
+        abilityCanProgress: this.abilityCanProgress,
+        weaponName: this.weaponName,
+        weaponData: this.weaponJson ? JSON.parse(this.weaponJson) : ''
       }
 
       attackChatData.json = JSON.stringify(attackChatData)
@@ -308,6 +324,8 @@ export class PoolPanel extends Application {
       let pool = new BwDicePool(this.getShade(), this.numDice + this.numPersona, open, this.ob, this.numPersona)
       await pool.roll()
 
+      console.log("***** Weapon JSON", JSON.parse(this.weaponJson))
+
       const chatData = {
         ...pool.data,
         allowFate: open || pool.data.sixes,
@@ -319,7 +337,9 @@ export class PoolPanel extends Application {
         abilityShade: this.abilityShade,
         abilityExponent: this.abilityExponent ? this.abilityExponent : '',
         abilityType: this.abilityType,
-        abilityCanProgress: this.abilityCanProgress
+        abilityCanProgress: this.abilityCanProgress,
+        weaponName: this.weaponName,
+        weaponData: this.weaponJson ? JSON.parse(this.weaponJson) : ''
       }
 
       chatData.json = JSON.stringify(chatData)
@@ -333,12 +353,13 @@ export class PoolPanel extends Application {
 
     this.usingPersona = false;
 
-    this.afterAbilityRoll();
+    this.afterRollResetAbility();
+    this.afterRollResetWeapons();
 
     this.render();
   }
 
-  afterAbilityRoll() {
+  afterRollResetAbility() {
 
     if(!this.abilityName) {
       return;
@@ -363,7 +384,11 @@ export class PoolPanel extends Application {
     this.abilityName = '';
     this.abilityType = '';
     this.abilityLabel = '';
+  }
 
+  afterRollResetWeapons() {
+    this.weaponJson = '';
+    this.weaponName = '';
   }
 
   async rollDieOfFate(){
@@ -496,7 +521,7 @@ export class PoolPanel extends Application {
             return sum + (armorData.dice[key] ? 1 : 0);  
           }, 0);
 
-          let armorLabel = `${armorName} Armor`;
+          let armorLabel = `${armorName}`;
           if(armorData.type) {
             armorLabel += ` (${armorData.type})`;
           }
@@ -615,8 +640,124 @@ export class PoolPanel extends Application {
     let capitalized =  name.charAt(0).toUpperCase() + name.slice(1).replace(/_/g, ' ');
 
      return capitalized.replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Split camelCase or PascalCase
-            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2').trim() // Handle acronyms
-           
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2').trim() // Handle acronyms           
+  }
+
+  addWeaponsToRenderData(data) {
+    const actor = getActor();
+    console.log("Current Actor?", actor);
+    if (actor && actor?.system?.skills) { 
+      console.log("Current Actor:", actor);
+      this.addActorWeaponsToRenderData(actor, data);
+    }
+    else {
+      this.addDefaultWeaponstoRenderData(data);
+    }
+  }
+
+  addActorWeaponsToRenderData(actor, data) {
+    if(!actor) {
+      return;
+    }
+
+    let allWeapons = [];
+
+    if(actor?.system?.gear?.weapons) {
+      let weapons =actor?.system?.gear?.weapons;
+
+      console.log("Actor weapons:", weapons);
+
+      let actorPower = actor?.system?.stats?.power?.exponent || 0;
+      if(!actorPower) {
+        return;
+      }
+
+      // get the weapons which are stored as keys on the weapons object
+      let weaponsFiltered = Object.keys(weapons).map(key => weapons[key]).filter(weapon => !!weapon.name);
+      allWeapons = weaponsFiltered.map(weapon => {
+
+        console.log("Weapon data:", weapon);
+
+        const basePower = actorPower + weapon.pow;
+        const data= {
+          name: weapon.name?.trim(),
+          label: weapon.name?.trim(),
+          i:  Math.ceil(basePower/2),
+          m: basePower, 
+          s: Math.floor(basePower * 1.5),
+          shade: weapon.shade ?? 'B',
+          type: 'weapons',
+          va: weapon.va,
+          ws: weapon.ws,
+          add: weapon.add,
+          length: weapon.length
+        };
+  
+        const jsonData = JSON.stringify(data);
+        return {...data, json: jsonData };
+      });
+    }
+
+    if(actor?.system?.gear?.rangedWeapons) {
+      let weapons =actor?.system?.gear?.rangedWeapons;
+      // get the weapons which are stored as keys on the weapons object
+      let weaponsFiltered = Object.keys(weapons).map(key => weapons[key]).filter(weapon => !!weapon.name);
+      allWeapons.push(...weaponsFiltered.map(weapon => {
+        const data = {
+          name: weapon.name?.trim(),
+          label: weapon.name?.trim(),
+          i: weapon.dofI,
+          m: weapon.dofM, 
+          s: weapon.dofS,
+          shade: weapon.shade ?? 'B',
+          add: '1/2',
+          type: 'rangedWeapons',
+          ws: '-',
+          va: weapon.va,
+          length: `${weapon.optimalRange} / ${weapon.extremeRange}`
+        };
+
+        console.log("Weapon data:", data);
+
+        console.log("WEAPON", weapon)
+
+        const jsonData = JSON.stringify(data);
+        return {...data, json: jsonData };
+
+      }));
+    }
+
+    data.weapons = allWeapons;
+  }
+
+  addDefaultWeaponstoRenderData(data) {
+    let allWeapons = [
+      { name: 'Claw', label: 'Claw', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 1, ws: 3, add: '2', length: 'Shortest' },
+      { name: 'Bite', label: 'Bite', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 1, ws: 3, add: '2', length: 'Shortest' },
+      { name: 'Sword', label: 'Sword', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 1, ws: 3, add: '2', length: 'Short' },
+      { name: 'Spear', label: 'Spear', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 0, ws: 0, add: '2', length: 'Short' },
+      { name: 'Mace', label: 'Mace', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 0, ws: 0, add: '2', length: 'Short' },
+      { name: 'Knife', label: 'Knife', i: 2, m: 3, s: 4, shade: 'B', type: 'weapons', va: 0, ws: 0, add:'2', length:'Shortest' },
+      { name:'Axe', label:'Axe', i :2 , m :3 , s :4 , shade :'B' , type :'weapons' , va :0 , ws :0 , add :'2' , length :'Short' },
+
+      { name:'White Fire', label:'White Fire', dofI :2 , dofM :3 , dofS :4 , shade :'B' , type :'rangedWeapons' , va :0 , ws :0 , add :'1/2' , length :'Short' },
+
+      { name: 'Bow', label: 'Bow', dofI: 2, dofM: 3, dofS: 4, shade: 'B', type: 'rangedWeapons', va: 0, ws: 0, add: '1/2', length: 'Short' },
+      { name: 'Crossbow', label: 'Crossbow', dofI: 2, dofM: 3, dofS: 4, shade: 'B', type: 'rangedWeapons', va: 0, ws: 0, add: '1/2', length: 'Short' },
+    ];
+
+    data.weapons = allWeapons.map(weapon => {
+      const jsonData = JSON.stringify(weapon);
+      return {...weapon, json: jsonData };
+    })
+  }
+
+  handleWeaponSelected(weaponName, weaponJson) {
+
+    this.weaponName = weaponName;
+    this.weaponJson = weaponJson;
+
+    this.render();
   }
 }
 

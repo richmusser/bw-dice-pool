@@ -54,7 +54,8 @@ async function registerPartials() {
 
   // Register Handlebars partials from array of file paths
     const partialPaths = [
-        'modules/bw-dice-pool/templates/partials/abilitySelector.hbs'
+        'modules/bw-dice-pool/templates/partials/abilitySelector.hbs',
+        'modules/bw-dice-pool/templates/partials/weaponSelector.hbs'
     ];
 
     for (const partialPath of partialPaths) {

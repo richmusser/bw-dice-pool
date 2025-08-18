@@ -7,7 +7,6 @@ export function registerHelpers() {
         return accum;
     });
 
-
     Handlebars.registerHelper('equalsOne', function(value, options) {
         if(value === 1) {
             return options.fn(this);
@@ -23,6 +22,13 @@ export function registerHelpers() {
         return (currentValue === selectedValue) ? 'selected' : '';
     });
 
- 
+    Handlebars.registerHelper('ifeq', function (a, b, options) {
+        if (a === b) { 
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+    });
+
 }
 

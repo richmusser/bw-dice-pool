@@ -275,15 +275,55 @@
   bottom: 12px !important;
 }
 
-#ability-select {
+#ability-select, #weapon-select {
   color: white;
 }
 
-#ability-select option, optgroup {
+#ability-select option, #ability-select optgroup, #weapon-select option, #weapon-select optgroup {
   color: black;
 }
 
 .split-pool.expanded {
   background-color:  rgba(255,0,0,.25);
+}
 
+.weapon-chat-panel {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.weapon-chat-panel .header {
+  font-weight: bold;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.weapon-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr) 2fr;
+  margin-top: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid gray;
+}
+
+.weapon-stat-grid .weapon-stat-header {
+  font-weight: bold;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px;
+  font-size: .75em;
+  border-left: 1px solid gray;
+}
+
+.weapon-stat-grid .weapon-stat-header:first-child {
+  border-left:0;
+}
+
+.weapon-stat-grid .weapon-stat-value {
+  text-align: center;
+  padding: 2px;
+  border-left: 1px solid gray;
+}
+
+.weapon-stat-grid .weapon-stat-value:nth-child(8) {
+  border-left:0;
 }
