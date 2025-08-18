@@ -382,14 +382,14 @@ export class PoolPanel extends Application {
       this.recentAbilities.pop(); 
     }
 
-    this.abilityName = '';
-    this.abilityType = '';
-    this.abilityLabel = '';
+    // this.abilityName = '';
+    // this.abilityType = '';
+    // this.abilityLabel = '';
   }
 
   afterRollResetWeapons() {
-    this.weaponJson = '';
-    this.weaponName = '';
+   // this.weaponJson = '';
+  //  this.weaponName = '';
   }
 
   async rollDieOfFate(){
@@ -798,7 +798,7 @@ Hooks.on("controlToken", (token, controlled) => {
   if (controlled) {
     // A token was selected
     console.log(`Token ${token.name} was selected.`);
-       game.poolPanel.render(true);
+    game.poolPanel.render(true);
 
     // Your custom logic for when a token is selected
   } else {
