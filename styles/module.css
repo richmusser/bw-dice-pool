@@ -8,7 +8,7 @@
   gap: 10px;
   background: rgba(0, 0, 0, 0.5);
   width: 400px;
-  height: 180px;
+  height: 202px;
   border-radius: 4px; 
   padding: 8px;
   transition: all 0.3s ease;
@@ -17,7 +17,7 @@
 }
 
 #bw-dice-pool.expanded {
-  height: 350px !important;
+  height: 368px !important;
 }
 
 .split-sections {
@@ -284,7 +284,7 @@
 }
 
 .split-pool.expanded {
-  background-color:  rgba(255,0,0,.25);
+  background-color:  rgba(255,255,255,.5);
 }
 
 .weapon-chat-panel {
@@ -326,4 +326,9 @@
 
 .weapon-stat-grid .weapon-stat-value:nth-child(8) {
   border-left:0;
+}
+
+.wounds {
+  color: red;
+  font-weight: bold;
 }

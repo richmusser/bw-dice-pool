@@ -1,13 +1,27 @@
 <div id="bw-dice-pool" class="flexcol {{ternary flushToBottom 'flush-bottom' ''}} {{ternary isBloodyVs 'expanded' ''}}" >
 
-    <div class="flexrow">
-      <div class="flexcol">
-        {{> "modules/bw-dice-pool/templates/partials/abilitySelector.hbs"}}    
-      </div>
-      <div class="flexcol">
-       {{> "modules/bw-dice-pool/templates/partials/weaponSelector.hbs"}}           
-      </div>
+  <div class="flexrow">
+    <div class="flexcol">
+      {{> "modules/bw-dice-pool/templates/partials/abilitySelector.hbs"}}    
     </div>
+    <div class="flexcol">
+      {{> "modules/bw-dice-pool/templates/partials/weaponSelector.hbs"}}           
+    </div>    
+  </div>
+
+  <div class="flexrow">
+    {{#if wounds}}
+      <div class="flexcol">
+        <span class="wounds">Wounds: {{wounds}}</span>
+      </div>
+    {{/if}}
+    {{#unless wounds}}
+      <div class="flexcol">
+        Wounds:  None
+      </div>
+    {{/unless}}
+
+  </div>
 
   <div class="flexrow">
 

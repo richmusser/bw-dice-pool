@@ -238,6 +238,7 @@ export class PoolPanel extends Application {
 
     this.addAbilitiesToRenderData(data);
     this.addWeaponsToRenderData(data);
+    this.addWoundsToRenderData(data);
    
     data.abilityName = this.abilityName;
     data.weaponName = this.weaponName;
@@ -606,7 +607,6 @@ export class PoolPanel extends Application {
       return;
     };
 
-
     this.abilityName = name;
     this.abilityLabel = label;
     this.abilityType = type;
@@ -753,11 +753,33 @@ export class PoolPanel extends Application {
   }
 
   handleWeaponSelected(weaponName, weaponJson) {
-
     this.weaponName = weaponName;
     this.weaponJson = weaponJson;
-
     this.render();
+  }
+
+  addWoundsToRenderData(data) {
+    let actor = getActor();
+    if(!actor) {
+      return;
+    }
+
+    let woundDice = actor.system?.pgts?.woundedDice || 0;
+    let obPenality = actor.system?.pgts?.obstaclePenalties || 0;
+
+    let woundString ="";
+
+    if (woundDice > 0) {
+      woundString = `-${woundDice}D`
+    }
+
+    if( obPenality > 0) {
+      if(woundString) {
+        woundString += ' / '
+      }
+      woundString += `-${obPenality} Ob`;
+    }
+    data.wounds = woundString;
   }
 }
 
@@ -784,6 +806,5 @@ Hooks.on("controlToken", (token, controlled) => {
     console.log(`Token ${token.name} was deselected.`);
     // Your custom logic for when a token is deselected
   }
-
 
 });
