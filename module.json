@@ -2,7 +2,7 @@
     "name": "bw-dice-pool",
     "title": "BW Dice Pool",
     "description": "A module that adds a dice-pool rolling button to the HUD, with success counting.",
-    "version": "1.4",
+    "version": "1.5",
  
     "compatibility": { 
       "minimum": "12", 
@@ -17,5 +17,5 @@
     ],
     "socket": true,
     "manifest": "https://raw.githubusercontent.com/richmusser/bw-dice-pool/refs/heads/main/module.json",
-    "download": "https://github.com/richmusser/bw-dice-pool/archive/refs/tags/1.4.zip"
+    "download": "https://github.com/richmusser/bw-dice-pool/archive/refs/tags/1.5.zip"
   }

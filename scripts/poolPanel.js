@@ -325,8 +325,6 @@ export class PoolPanel extends Application {
       let pool = new BwDicePool(this.getShade(), this.numDice + this.numPersona, open, this.ob, this.numPersona)
       await pool.roll()
 
-      console.log("***** Weapon JSON", JSON.parse(this.weaponJson))
-
       const chatData = {
         ...pool.data,
         allowFate: open || pool.data.sixes,
