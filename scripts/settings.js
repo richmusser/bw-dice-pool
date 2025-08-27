@@ -1,17 +1,11 @@
 export function registerSettings() {
 
 
-    game.settings.register('bw-dice-pool', 'obstacle', {
-        scope: 'world',
-        type: Number,
-        default: 3
-    })
-
     game.settings.register(
         'bw-dice-pool',
-        'gmSetsDifficulty',
+        'getSetsOb',
         {
-            name: 'GM sets the difficulty',
+            name: 'GM sets the obstacle for tests',
             scope: 'world',
             config: true,
             type: Boolean,
@@ -20,21 +14,12 @@ export function registerSettings() {
         }
     );
 
-
 }
 
-export function getGMSetDifficulty() {
-    return game.settings.get('bw-dice-pool', 'gmSetsDifficulty');
+export function getGmSetsOb() {
+    return game.settings.get('bw-dice-pool', 'getSetsOb');
 }
 
-export function setGMSetDifficulty(value) {
-    game.settings.set('bw-dice-pool', 'gmSetsDifficulty', value);
-}
-
-export function getOb() {
-    return game.settings.get('bw-dice-pool', 'obstacle');
-}
-
-export function setOb(value) {
-    game.settings.set('bw-dice-pool', 'obstacle', value);
+export function setGmSetsOb(value) {
+    game.settings.set('bw-dice-pool', 'getSetsOb', value);
 }

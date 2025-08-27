@@ -1,4 +1,5 @@
 import { shadeToTarget, shadeLabel } from './shadeUtils.js'
+import { getDifficulty } from './difficulty.js'
 
 export class BwDicePool {
 
@@ -51,7 +52,7 @@ export class BwDicePool {
       sixes: sixes.length,
       successCount: successes.length,
       rollResults: roll.terms[0].results, // {success, result}
-      difficulty: this.findTestDifficulty(totalDice),
+      difficulty:  getDifficulty(totalDice, this.ob),
       shadeLabel: shadeLabel(this.shade),
       shade: this.shade,
       isOpen: this.isOpen,

@@ -40,12 +40,7 @@ export class PoolPanel extends Application {
       popOut: false,
     });
 
-    try {
-      this.ob = settings.getOb();
-    }
-    catch (err) {
-      console.error('Error getting obstacle setting: ' + err)
-    }
+    this.ob = 1;
   }
 
   activateListeners(html) {
@@ -222,9 +217,8 @@ export class PoolPanel extends Application {
 
     this.render();
 
-    if(settings.getGMSetDifficulty()) {
+    if(settings.getGmSetsOb()) {
       this.sendObChangedEvent(this.ob)
-      settings.setOb(ob)
     }
  
   }
@@ -253,7 +247,7 @@ export class PoolPanel extends Application {
     data.ob = this.ob
     data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
-    data.showObControls = game.user.isGM || !getGMSetDifficulty();
+    data.showObControls = game.user.isGM || !settings.getGmSetsOb();
     data.numPersona = this.numPersona
     data.personaMode = this.personaMode
     data.flushToBottom = true
@@ -417,33 +411,7 @@ export class PoolPanel extends Application {
   }
 
 
-  findTestDifficulty(dice, ob) {
-
-    if (ob > dice) {
-      return 'Challenging'
-    }
-    else if (dice === 1) {
-      return 'Routine/Difficult'
-    }
-    else if (dice <= 3) {
-      if (ob === dice)
-        return 'Difficult'
-      else
-        return 'Routine'
-    }
-    else if (dice <= 7) {
-      if (dice - ob <= 1)
-        return 'Difficult'
-      else
-        return 'Routine'
-    }
-    else {
-      if (dice - ob <= 2)
-        return 'Difficult'
-      else
-        return 'Routine'
-    }
-  }
+ 
 
   addAbilitiesToRenderData(data) {
     const actor = getActor();
