@@ -1,6 +1,5 @@
 export function registerSettings() {
 
-
     game.settings.register(
         'bw-dice-pool',
         'getSetsOb',
@@ -14,6 +13,18 @@ export function registerSettings() {
         }
     );
 
+    game.settings.register(
+        'bw-dice-pool',
+        'useEasyDifficulty',
+        {
+            name: 'Use lower thresholds for difficulty than RAW',
+            scope: 'world',
+            config: true,
+            type: Boolean,
+            default: false
+        }
+    );
+
 }
 
 export function getGmSetsOb() {
@@ -22,4 +33,12 @@ export function getGmSetsOb() {
 
 export function setGmSetsOb(value) {
     game.settings.set('bw-dice-pool', 'getSetsOb', value);
+}
+
+export function useEasyDifficulty() {
+    return game.settings.get('bw-dice-pool', 'useEasyDifficulty');
+}
+
+export function setUseEasyDifficulty(value) {
+    game.settings.set('bw-dice-pool', 'useEasyDifficulty', value);
 }
