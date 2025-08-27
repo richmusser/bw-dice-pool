@@ -1,6 +1,7 @@
 import { PoolPanel } from './poolPanel.js'
 import { registerHelpers } from './handlebarHelpers.js'
 import { fateReroll, deedsReroll, awardTest } from './chatMessageHandlers.js';
+import { registerSettings } from './settings.js'
 
 Hooks.on('init', async() => {
   registerHelpers();
@@ -42,13 +43,7 @@ Hooks.on("renderChatMessage", (app, html, data) => {
   // initChatMessage(html)
 });
 
-function registerSettings() {
-  game.settings.register('bw-dice-pool', 'obstacle', {
-    scope: 'world',
-    type: Number, 
-    default: 3
-  })
-}
+
 
 async function registerPartials() {
 

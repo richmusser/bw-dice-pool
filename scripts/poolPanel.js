@@ -1,6 +1,7 @@
 import { shadeToTarget, shadeLabel } from './shadeUtils.js'
 import { getActor } from './getActor.js'
 import { BwDicePool } from './BwDicePool.js'
+import * as settings from './settings.js'
 
 const SOCKET_NAME = 'module.bw-dice-pool'
 
@@ -40,7 +41,7 @@ export class PoolPanel extends Application {
     });
 
     try {
-      this.ob = game.settings.get('bw-dice-pool', 'obstacle')
+      this.ob = settings.getOb();
     }
     catch (err) {
       console.error('Error getting obstacle setting: ' + err)
@@ -220,8 +221,12 @@ export class PoolPanel extends Application {
     this.ob = ob
 
     this.render();
-    this.sendObChangedEvent(this.ob)
-    game.settings.set('bw-dice-pool', 'obstacle', ob)
+
+    if(settings.getGMSetDifficulty()) {
+      this.sendObChangedEvent(this.ob)
+      settings.setOb(ob)
+    }
+ 
   }
 
   sendObChangedEvent(ob) {
@@ -248,6 +253,7 @@ export class PoolPanel extends Application {
     data.ob = this.ob
     data.shade = shadeLabel(this.getShade())
     data.isGm = game.user.isGM
+    data.showObControls = game.user.isGM || !getGMSetDifficulty();
     data.numPersona = this.numPersona
     data.personaMode = this.personaMode
     data.flushToBottom = true
